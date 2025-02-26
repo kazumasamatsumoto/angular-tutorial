@@ -1,59 +1,81 @@
-# FirstStep
+## ローカルに新しいプロジェクトを設定する
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7.
+新しいプロジェクトを開始する場合、Git などのツールを使用するために、ローカルにプロジェクトを作成するのが一般的です。
 
-## Development server
+### 前提条件
 
-To start a local development server, run:
+- **Node.js** - v[^18.19.1 以降](/reference/versions)
+- **テキストエディタ** - [Visual Studio Code](https://code.visualstudio.com/)を推奨
+- **ターミナル** - Angular CLI コマンドを実行するために必要
 
-```bash
-ng serve
+### 手順
+
+以下のガイドは、ローカルに Angular プロジェクトを設定する手順を説明します。
+
+#### Angular CLI をインストールする
+
+ターミナルを開き（[Visual Studio Code](https://code.visualstudio.com/)を使用している場合は、[統合ターミナル](https://code.visualstudio.com/docs/editor/integrated-terminal)を開くことができます）、次のコマンドを実行します。
+
+<docs-code language="shell">
+
+npm install -g @angular/cli
+
+</docs-code>
+
+Windows または Unix でこのコマンドを実行する際に問題が発生した場合は、[CLI ドキュメント](/tools/cli/setup-local#install-the-angular-cli)を参照してください。
+
+#### 新しいプロジェクトを作成する
+
+ターミナルで、CLI コマンド`ng new`を実行し、目的のプロジェクト名を入力します。次の例では、`my-first-angular-app`というプロジェクト名を使用します。
+
+<docs-code language="shell">
+
+ng new <project-name>
+
+</docs-code>
+
+プロジェクトの設定に関するいくつかのオプションが表示されます。矢印キーと Enter キーを使ってナビゲートし、必要なオプションを選択します。
+
+特に好みがなければ、Enter キーを押してデフォルトのオプションを採用し、設定を続行してください。
+
+設定オプションを選択し、CLI がセットアップを実行すると、次のようなメッセージが表示されます。
+
+```shell
+✔ Packages installed successfully.
+    Successfully initialized git.
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+これで、ローカルにプロジェクトを実行する準備が整いました！
 
-## Code scaffolding
+#### ローカルに新しいプロジェクトを実行する
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+ターミナルで、新しい Angular プロジェクトに切り替えます。
 
-```bash
-ng generate component component-name
+<docs-code language="shell">
+
+cd my-first-angular-app
+
+</docs-code>
+
+この時点で、すべての依存関係がインストールされているはずです（プロジェクト内に`node_modules`フォルダが存在することを確認できます）。次のコマンドを実行してプロジェクトを開始できます。
+
+<docs-code language="shell">
+
+npm start
+
+</docs-code>
+
+すべてが正常に完了すると、ターミナルに次のような確認メッセージが表示されます。
+
+```shell
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  ➜  Local:   http://localhost:4200/
+  ➜  press h + enter to show help
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+これで、`Local`のパス（例：`http://localhost:4200`）にアクセスしてアプリケーションを確認できます。コーディングを楽しんでください！🎉
 
-```bash
-ng generate --help
-```
+## 次のステップ
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Angular プロジェクトを作成したので、[基本概念ガイド](/essentials)で Angular の詳細について学ぶか、詳しいガイドからトピックを選択してください！
