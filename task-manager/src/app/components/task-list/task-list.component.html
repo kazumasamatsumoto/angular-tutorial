@@ -1,0 +1,19 @@
+<div class="task-list">
+  <h2>タスク一覧</h2>
+  
+  @if (tasks.length === 0) {
+    <p class="no-tasks">タスクがありません。新しいタスクを追加してください。</p>
+  } @else {
+    <ul>
+      @for (task of tasks; track task.id) {
+        <li (click)="onSelectTask(task.id)">
+          <app-task-item 
+            [task]="task" 
+            (toggleComplete)="onTaskToggle(task.id)" 
+            (deleteTask)="onTaskDelete(task.id)">
+          </app-task-item>
+        </li>
+      }
+    </ul>
+  }
+</div>

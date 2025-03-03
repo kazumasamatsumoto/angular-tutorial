@@ -1,0 +1,21 @@
+<div class="task-app">
+  <header>
+    <h1>タスク管理アプリ</h1>
+    <p>Angularコンポーネントの学習用アプリケーション</p>
+  </header>
+  
+  <div class="container">
+    <div class="main-content">
+      <app-task-form (taskAdded)="onCloseDetail()"></app-task-form>
+      <app-task-list (selectTask)="onSelectTask($event)"></app-task-list>
+    </div>
+    
+    <div class="side-panel" [class.open]="selectedTask !== null">
+      <app-task-detail 
+        [task]="selectedTask" 
+        (updateTask)="onUpdateTask($event)" 
+        (closeDetail)="onCloseDetail()">
+      </app-task-detail>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.task-list {
+  margin: 20px 0;
+  
+  h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  .no-tasks {
+    color: #666;
+    font-style: italic;
+  }
+}

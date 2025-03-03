@@ -1,0 +1,42 @@
+<div class="task-form">
+  <h2>新しいタスクを追加</h2>
+  
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="title">タイトル</label>
+      <input 
+        type="text" 
+        id="title" 
+        formControlName="title" 
+        placeholder="タスクのタイトルを入力"
+      >
+      @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+        <div class="error-message">
+          @if (taskForm.get('title')?.errors?.['required']) {
+            <span>タイトルは必須です</span>
+          }
+          @if (taskForm.get('title')?.errors?.['minlength']) {
+            <span>タイトルは3文字以上必要です</span>
+          }
+        </div>
+      }
+    </div>
+    
+    <div class="form-group">
+      <label for="description">説明</label>
+      <textarea 
+        id="description" 
+        formControlName="description" 
+        placeholder="タスクの説明を入力"
+        rows="3"
+      ></textarea>
+      @if (taskForm.get('description')?.invalid && taskForm.get('description')?.touched) {
+        <div class="error-message">
+          <span>説明は必須です</span>
+        </div>
+      }
+    </div>
+    
+    <button type="submit" [disabled]="taskForm.invalid">タスクを追加</button>
+  </form>
+</div>

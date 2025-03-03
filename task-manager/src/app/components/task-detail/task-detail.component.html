@@ -1,0 +1,66 @@
+<div class="task-detail" *ngIf="task">
+  <div class="detail-header">
+    <h2>タスク詳細</h2>
+    <button class="close-btn" (click)="onClose()">✕</button>
+  </div>
+  
+  <div class="detail-content">
+    @if (!isEditing) {
+      <div class="view-mode">
+        <div class="status" [class.completed]="task.completed">
+          {{ task.completed ? '完了' : '未完了' }}
+        </div>
+        <h3>{{ task.title }}</h3>
+        <p class="description">{{ task.description }}</p>
+        <button class="edit-btn" (click)="onToggleEdit()">編集</button>
+      </div>
+    } @else {
+      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="detail-title">タイトル</label>
+          <input 
+            type="text" 
+            id="detail-title" 
+            formControlName="title"
+          >
+          @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+            <div class="error-message">
+              @if (taskForm.get('title')?.errors?.['required']) {
+                <span>タイトルは必須です</span>
+              }
+              @if (taskForm.get('title')?.errors?.['minlength']) {
+                <span>タイトルは3文字以上必要です</span>
+              }
+            </div>
+          }
+        </div>
+        
+        <div class="form-group">
+          <label for="detail-description">説明</label>
+          <textarea 
+            id="detail-description" 
+            formControlName="description"
+            rows="3"
+          ></textarea>
+          @if (taskForm.get('description')?.invalid && taskForm.get('description')?.touched) {
+            <div class="error-message">
+              <span>説明は必須です</span>
+            </div>
+          }
+        </div>
+        
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" formControlName="completed">
+            完了済みとしてマーク
+          </label>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="onToggleEdit()">キャンセル</button>
+          <button type="submit" [disabled]="taskForm.invalid">保存</button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

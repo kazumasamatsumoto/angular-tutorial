@@ -1,0 +1,13 @@
+<div class="task-item" [class.completed]="task.completed">
+  <div class="task-content">
+    <h3>{{ task.title }}</h3>
+    <p>{{ task.description }}</p>
+  </div>
+  
+  <div class="task-actions">
+    <button class="toggle-btn" (click)="onToggleComplete()">
+      {{ task.completed ? '✓' : '○' }}
+    </button>
+    <button class="delete-btn" (click)="onDeleteTask()">✕</button>
+  </div>
+</div>
