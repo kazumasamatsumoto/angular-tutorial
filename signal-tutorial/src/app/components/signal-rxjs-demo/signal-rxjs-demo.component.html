@@ -1,0 +1,87 @@
+<div class="signal-rxjs-demo-container">
+  <h2>Angular Signals + RxJS Integration Demo</h2>
+  
+  <section class="demo-section">
+    <h3>1. Signal to Observable Conversion</h3>
+    <div class="counter-demo">
+      <div class="counter-display">
+        <span class="counter-value">{{ counter() }}</span>
+      </div>
+      <div class="counter-controls">
+        <button (click)="decrementCounter()">-</button>
+        <button (click)="resetCounter()">Reset</button>
+        <button (click)="incrementCounter()">+</button>
+      </div>
+      <p class="counter-info">
+        This counter uses a signal that is converted to an observable using <code>toObservable()</code>.
+        Check the console to see the logged values from both the signal effect and the observable subscription.
+      </p>
+    </div>
+  </section>
+  
+  <section class="demo-section">
+    <h3>2. Debounced Search with Signals and RxJS</h3>
+    <div class="search-demo">
+      <div class="search-input">
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          [value]="searchTerm()" 
+          (input)="updateSearchTerm($event)"
+        />
+      </div>
+      <div class="search-results">
+        @if (searchResults().length > 0) {
+          <ul>
+            @for (result of searchResults(); track result) {
+              <li>{{ result }}</li>
+            }
+          </ul>
+        } @else if (searchTerm().length > 0) {
+          <p>No results found for "{{ searchTerm() }}"</p>
+        } @else {
+          <p>Type to search...</p>
+        }
+      </div>
+      <p class="search-info">
+        This search input uses a signal that is converted to an observable, then debounced using RxJS operators.
+        The results are stored in another signal.
+      </p>
+    </div>
+  </section>
+  
+  <section class="demo-section">
+    <h3>3. Observable to Signal Conversion</h3>
+    <div class="timer-demo">
+      <div class="timer-display">
+        <span class="timer-value">{{ formattedTimer() }}</span>
+      </div>
+      <p class="timer-info">
+        This timer uses an RxJS interval observable that is converted to a signal using <code>toSignal()</code>.
+        The formatted time is a computed signal that depends on the timer signal.
+      </p>
+    </div>
+  </section>
+  
+  <div class="code-explanation">
+    <h3>Key Concepts Demonstrated</h3>
+    <ul>
+      <li>
+        <strong>Signal to Observable:</strong> 
+        <code>const counter$ = toObservable(counter);</code>
+      </li>
+      <li>
+        <strong>Observable to Signal:</strong> 
+        <code>const timerSignal = toSignal(timer$, &#123; initialValue: 0 &#125;);</code>
+      </li>
+      <li>
+        <strong>Computed Signals:</strong> 
+        <code>const formattedTimer = computed(() => &#123; ... &#125;);</code>
+      </li>
+      <li>
+        <strong>RxJS Operators with Signals:</strong> 
+        <code>searchTerm$.pipe(debounceTime(300), distinctUntilChanged())</code>
+      </li>
+    </ul>
+  </div>
+</div>

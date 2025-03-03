@@ -1,0 +1,24 @@
+<li class="task-item" [class.completed]="task.completed">
+  <div class="task-content">
+    <div class="task-header">
+      <div class="task-checkbox">
+        <input 
+          type="checkbox" 
+          [checked]="task.completed" 
+          (change)="toggle.emit()"
+        />
+      </div>
+      
+      <h3 class="task-title">{{ task.title }}</h3>
+      
+      <button class="delete-button" (click)="delete.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    <div class="task-details">
+      <p class="task-description">{{ task.description }}</p>
+      <p class="task-date">Created: {{ formatDate(task.createdAt) }}</p>
+    </div>
+  </div>
+</li>

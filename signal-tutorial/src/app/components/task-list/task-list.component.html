@@ -1,0 +1,17 @@
+<div class="task-list-container">
+  @if (tasks.length > 0) {
+    <ul class="task-list">
+      @for (task of tasks; track task.id) {
+        <app-task-item 
+          [task]="task" 
+          (toggle)="toggleTask(task.id)" 
+          (delete)="deleteTask(task.id)"
+        ></app-task-item>
+      }
+    </ul>
+  } @else {
+    <div class="empty-state">
+      <p>No tasks found. Add a new task to get started!</p>
+    </div>
+  }
+</div>

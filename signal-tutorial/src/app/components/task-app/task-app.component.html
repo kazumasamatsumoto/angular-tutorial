@@ -1,0 +1,61 @@
+<div class="task-app-container">
+  <header class="app-header">
+    <h1>Task Manager with Angular Signals</h1>
+    
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        placeholder="Search tasks..." 
+        (input)="onSearch()"
+      />
+    </div>
+    
+    <div class="filter-container">
+      <button 
+        [class.active]="currentFilter === 'all'"
+        (click)="setFilter('all')"
+      >
+        All ({{ stats().total }})
+      </button>
+      <button 
+        [class.active]="currentFilter === 'active'"
+        (click)="setFilter('active')"
+      >
+        Active ({{ stats().active }})
+      </button>
+      <button 
+        [class.active]="currentFilter === 'completed'"
+        (click)="setFilter('completed')"
+      >
+        Completed ({{ stats().completed }})
+      </button>
+      
+      <button 
+        class="clear-completed"
+        (click)="clearCompleted()"
+        [disabled]="stats().completed === 0"
+      >
+        Clear Completed
+      </button>
+    </div>
+  </header>
+  
+  <main>
+    <!-- Task Form Component -->
+    <app-task-form></app-task-form>
+    
+    <!-- Task Stats Component -->
+    <app-task-stats [stats]="stats()"></app-task-stats>
+    
+    <!-- Task List Component -->
+    <app-task-list [tasks]="filteredTasks()"></app-task-list>
+  </main>
+  
+  <footer class="app-footer">
+    <p>
+      <strong>Angular Signals Tutorial</strong> - 
+      A demonstration of reactive state management with Angular Signals
+    </p>
+  </footer>
+</div>

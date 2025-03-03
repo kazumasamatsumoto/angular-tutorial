@@ -1,0 +1,27 @@
+<div class="task-stats-container">
+  <div class="stats-summary">
+    <div class="stat-item">
+      <span class="stat-label">Total Tasks:</span>
+      <span class="stat-value">{{ stats.total }}</span>
+    </div>
+    
+    <div class="stat-item">
+      <span class="stat-label">Active:</span>
+      <span class="stat-value">{{ stats.active }}</span>
+    </div>
+    
+    <div class="stat-item">
+      <span class="stat-label">Completed:</span>
+      <span class="stat-value">{{ stats.completed }}</span>
+    </div>
+    
+    <div class="stat-item">
+      <span class="stat-label">Completion:</span>
+      <span class="stat-value">{{ completionPercentage }}%</span>
+    </div>
+  </div>
+  
+  <div class="progress-bar-container">
+    <div class="progress-bar" [style.width.%]="completionPercentage"></div>
+  </div>
+</div>
