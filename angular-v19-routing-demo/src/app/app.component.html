@@ -1,0 +1,39 @@
+<header>
+  <nav>
+    <ul>
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          ariaCurrentWhenActive="page"
+          >ホーム</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/about"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >アバウト</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/products"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >製品一覧</a
+        >
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<footer>
+  <p>© 2023 Angular v19 ルーティングデモ</p>
+</footer>

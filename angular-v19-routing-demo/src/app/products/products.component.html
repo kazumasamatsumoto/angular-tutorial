@@ -1,0 +1,15 @@
+<div class="products-container">
+  <h1>製品一覧</h1>
+
+  <div class="products-grid">
+    @for (product of products; track product.id) {
+    <div class="product-card">
+      <h2>{{ product.name }}</h2>
+      <p class="price">価格: {{ product.price }}円</p>
+      <a [routerLink]="['/products', product.id]" class="detail-link">詳細を見る</a>
+    </div>
+    } @empty {
+    <p>製品が見つかりません</p>
+    }
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="product-detail-container">
+  @if (product) {
+  <div class="product-detail">
+    <h1>{{ product.name }}</h1>
+    <div class="product-info">
+      <p class="description">{{ product.description }}</p>
+      <p class="price">価格: {{ product.price }}円</p>
+    </div>
+    <button (click)="goBack()" class="back-button">製品一覧に戻る</button>
+  </div>
+  } @else {
+  <div class="loading">
+    <p>製品を読み込み中...</p>
+  </div>
+  }
+</div>

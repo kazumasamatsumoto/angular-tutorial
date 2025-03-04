@@ -1,0 +1,28 @@
+nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  gap: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  color: #333;
+}
+
+nav a.active {
+  background-color: #1976d2;
+  color: white;
+}
+
+main {
+  padding: 2rem;
+  min-height: 70vh;
+}
+
+header, footer {
+  padding: 1rem;
+  background-color: #f5f5f5;
+}
