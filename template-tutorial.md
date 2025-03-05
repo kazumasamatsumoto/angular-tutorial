@@ -275,55 +275,83 @@ export class CounterComponent {
 
 ## 組み込み制御フロー
 
-Angular テンプレートは制御フローブロックをサポートしており、要素の表示、非表示、繰り返しを条件付きで行うことができます。
+Angular v17以降のテンプレートは、新しい制御フローブロックをサポートしており、要素の表示、非表示、繰り返しを条件付きで行うことができます。これらの新しい構文は、以前の`*ngIf`や`*ngFor`などの構造ディレクティブに代わるものであり、より直感的で読みやすいコードを実現します。
 
 ### `@if`、`@else-if`、`@else`で条件付きのコンテンツを表示する
 
+`@if`ブロックは、条件式が`true`と評価された場合にのみコンテンツを表示します。オプションで`@else-if`と`@else`ブロックを追加して、複数の条件や代替コンテンツを提供できます。
+
 ```angular-html
 @if (a > b) {
-  <p>{{a}} is greater than {{b}}</p>
+  <p>{{a}} は {{b}} より大きいです</p>
 } @else if (b > a) {
-  <p>{{a}} is less than {{b}}</p>
+  <p>{{a}} は {{b}} より小さいです</p>
 } @else {
-  <p>{{a}} is equal to {{b}}</p>
+  <p>{{a}} は {{b}} と等しいです</p>
 }
 ```
+
+この例では、`a`と`b`の値を比較し、その結果に基づいて異なるメッセージを表示します。
 
 #### 条件式の結果への参照
 
+`@if`ブロックでは、`as`キーワードを使用して条件式の結果を変数に格納し、ブロック内で参照することができます。これは、複雑なオブジェクトパスを複数回参照する必要がある場合に特に便利です。
+
 ```angular-html
 @if (user.profile.settings.startDate; as startDate) {
-  {{ startDate }}
+  <p>開始日: {{ startDate | date:'yyyy年MM月dd日' }}</p>
 }
 ```
+
+この例では、`user.profile.settings.startDate`の値を`startDate`変数に格納し、ブロック内で参照しています。これにより、長いオブジェクトパスを繰り返し記述する必要がなくなります。
 
 ### `@for`ブロックでコンテンツを繰り返す
 
+`@for`ブロックは、配列やイテラブルオブジェクトの各項目に対してコンテンツを繰り返します。`track`式は各項目を一意に識別するために使用され、効率的なDOM更新を可能にします。
+
 ```angular-html
 @for (item of items; track item.id) {
-  {{ item.name }}
+  <div class="item">{{ item.name }}</div>
 }
 ```
+
+この例では、`items`配列の各項目に対して`<div>`要素を生成し、`item.name`を表示します。`track item.id`は、各項目を一意に識別するために`id`プロパティを使用することを指定しています。
 
 #### `@for`ブロックのコンテキスト変数
 
+`@for`ブロックは、繰り返し処理に関する追加情報を提供するいくつかの組み込みコンテキスト変数を提供します。
+
 ```angular-html
 @for (item of items; track item.id; let idx = $index, e = $even) {
-  <p>Item #{{ idx }}: {{ item.name }}</p>
+  <div [class.even-row]="e">項目 #{{ idx }}: {{ item.name }}</div>
 }
 ```
+
+利用可能なコンテキスト変数は以下の通りです：
+
+- `$index`: 現在の項目のインデックス（0から始まる）
+- `$first`: 現在の項目が最初の項目かどうか（真偽値）
+- `$last`: 現在の項目が最後の項目かどうか（真偽値）
+- `$even`: 現在の項目のインデックスが偶数かどうか（真偽値）
+- `$odd`: 現在の項目のインデックスが奇数かどうか（真偽値）
 
 #### `@empty`ブロックを使用した`@for`ブロックのフォールバックの提供
 
+`@empty`ブロックを使用すると、繰り返し対象の配列やイテラブルが空の場合に表示されるフォールバックコンテンツを提供できます。
+
 ```angular-html
 @for (item of items; track item.name) {
-  <li> {{ item.name }}</li>
+  <li>{{ item.name }}</li>
 } @empty {
-  <li aria-hidden="true"> There are no items.</li>
+  <li class="empty-message">項目がありません。</li>
 }
 ```
 
+この例では、`items`配列が空の場合に「項目がありません。」というメッセージを表示します。これは、データがロードされていない場合やフィルタリングの結果が空の場合などに便利です。
+
 ### `@switch`ブロックを使用して条件付きでコンテンツを表示する
+
+`@switch`ブロックは、式の値に基づいて複数の選択肢から一つを選択します。`@case`ブロックは特定の値に一致する場合に表示され、`@default`ブロックはどの`@case`にも一致しない場合に表示されます。
 
 ```angular-html
 @switch (userPermissions) {
@@ -341,6 +369,88 @@ Angular テンプレートは制御フローブロックをサポートしてお
   }
 }
 ```
+
+この例では、`userPermissions`の値に基づいて異なるダッシュボードコンポーネントを表示します。値が`'admin'`、`'reviewer'`、または`'editor'`のいずれかに一致する場合は、対応するダッシュボードを表示し、それ以外の場合は`@default`ブロックで指定された閲覧者ダッシュボードを表示します。
+
+### 従来の構造ディレクティブとの比較
+
+新しい制御フロー構文は、以前の構造ディレクティブに比べていくつかの利点があります：
+
+1. **より読みやすいコード**: 新しい構文は、通常のプログラミング言語の制御フロー構文に似ており、より直感的に理解できます。
+
+2. **ネストされた条件の改善**: 複数の条件を`@else-if`と`@else`ブロックで簡単に表現できます。以前は、ネストされた`*ngIf`ディレクティブを使用する必要がありました。
+
+3. **型安全性の向上**: 新しい構文は、TypeScriptの型チェックとより緊密に統合されており、型関連のエラーを早期に検出できます。
+
+4. **パフォーマンスの最適化**: 新しい制御フロー構文は、内部的に最適化されており、特に大規模なリストや複雑な条件ロジックを持つアプリケーションでパフォーマンスが向上します。
+
+### 実際の使用例
+
+以下は、新しい制御フロー構文を使用した実際のシナリオの例です：
+
+#### ユーザー情報の表示
+
+```angular-html
+@if (isLoading) {
+  <app-loading-spinner />
+} @else {
+  @if (user) {
+    <div class="user-profile">
+      <h2>{{ user.name }}</h2>
+      @if (user.isAdmin) {
+        <span class="admin-badge">管理者</span>
+      }
+      <div class="user-details">
+        @for (detail of user.details; track detail.id) {
+          <div class="detail-item">
+            <strong>{{ detail.label }}:</strong> {{ detail.value }}
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <p>ユーザーが見つかりませんでした。</p>
+  }
+}
+```
+
+#### 権限に基づいたナビゲーション
+
+```angular-html
+<nav>
+  <ul>
+    @for (item of menuItems; track item.id) {
+      @if (hasPermission(item.requiredPermission)) {
+        <li><a [routerLink]="item.route">{{ item.label }}</a></li>
+      }
+    }
+  </ul>
+</nav>
+```
+
+#### 状態に基づいたコンポーネントの表示
+
+```angular-html
+@switch (orderStatus) {
+  @case ('pending') {
+    <app-pending-order [order]="order" />
+  }
+  @case ('processing') {
+    <app-processing-order [order]="order" />
+  }
+  @case ('shipped') {
+    <app-shipped-order [order]="order" />
+  }
+  @case ('delivered') {
+    <app-delivered-order [order]="order" />
+  }
+  @default {
+    <app-unknown-status [order]="order" />
+  }
+}
+```
+
+新しい制御フロー構文を使用することで、テンプレートコードがより読みやすく、メンテナンスしやすくなります。また、Angularの将来のバージョンでは、これらの新しい構文がさらに最適化され、機能が拡張される予定です。
 
 ## パイプ
 
