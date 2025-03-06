@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angular ng-content - グラフィックレコード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Zen Kurenaido', sans-serif;
+      background-color: #f9f9f9;
+      color: #334155;
+      line-height: 1.4;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #593C47;
+      padding-bottom: 15px;
+    }
+    
+    .title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #593C47, #F25C05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .date {
+      font-size: 14px;
+      color: #475569;
+    }
+    
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .column {
+      width: 33.33%;
+      padding: 15px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      border: 2px solid #F2E63D;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #F25C05;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .section-title {
+      font-family: 'Yomogi', cursive;
+      font-size: 18px;
+      color: #1e40af;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px dotted #F2C53D;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "✏️";
+      margin-right: 8px;
+    }
+    
+    .text {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      background-color: rgba(242, 197, 61, 0.3);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .arrow {
+      position: absolute;
+      width: 50px;
+      height: 30px;
+    }
+    
+    .arrow-right {
+      border-top: 2px dashed #F24405;
+      border-right: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .arrow-down {
+      border-right: 2px dashed #F24405;
+      border-bottom: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .example {
+      background-color: rgba(242, 92, 5, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #F25C05;
+    }
+    
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: 1px dotted #cbd5e1;
+    }
+    
+    .icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    
+    .connection {
+      position: absolute;
+      border: 1px dashed #593C47;
+      z-index: -1;
+    }
+    
+    .badge {
+      display: inline-block;
+      background-color: #F2C53D;
+      color: #593C47;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    
+    /* グラスモーフィズム効果 */
+    .glass {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* 手書き風の囲み線 */
+    .hand-drawn {
+      border: 2px solid #593C47;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    
+    /* 手書き風の矢印 */
+    .hand-arrow {
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .hand-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' width='100' height='20'%3E%3Cpath d='M0,10 Q25,5 50,10 T100,10 L95,5 M95,10 L95,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .component-diagram {
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .component-box {
+      padding: 15px;
+      border: 2px solid #593C47;
+      border-radius: 8px;
+      margin: 10px 0;
+      position: relative;
+    }
+    
+    .component-title {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background-color: white;
+      padding: 0 5px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    
+    .content-slot {
+      padding: 10px;
+      border: 2px dashed #F2C53D;
+      border-radius: 8px;
+      background-color: rgba(242, 230, 61, 0.1);
+      margin: 10px 0;
+      text-align: center;
+      font-size: 12px;
+    }
+    
+    .projection-arrow {
+      width: 20px;
+      height: 40px;
+      margin: 10px auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 40' width='20' height='40'%3E%3Cpath d='M10,0 V35 M5,30 L10,35 L15,30' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .parent-content {
+      padding: 10px;
+      border: 2px solid #F25C05;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Angular ng-content</h1>
+      <div class="date">2025年3月6日</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左カラム -->
+      <div class="column">
+        <div class="card hand-drawn">
+          <h2 class="section-title">ng-contentとは？</h2>
+          <p class="text">
+            <span class="icon">📌</span>親コンポーネントから子コンポーネントにコンテンツを渡すための機能
+          </p>
+          <p class="text">
+            <span class="highlight">コンテンツプロジェクション</span>とも呼ばれ、コンポーネントの再利用性と柔軟性を向上させる
+          </p>
+          <div class="component-diagram">
+            <div class="parent-content">
+              <div class="component-title">親コンポーネント</div>
+              <p>&lt;app-card&gt;</p>
+              <p>  &lt;h3&gt;カードタイトル&lt;/h3&gt;</p>
+              <p>  &lt;p&gt;カードの内容&lt;/p&gt;</p>
+              <p>&lt;/app-card&gt;</p>
+            </div>
+            <div class="projection-arrow"></div>
+            <div class="component-box">
+              <div class="component-title">子コンポーネント (app-card)</div>
+              <p>&lt;div class="card"&gt;</p>
+              <div class="content-slot">
+                &lt;ng-content&gt;&lt;/ng-content&gt;
+              </div>
+              <p>&lt;/div&gt;</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">基本的なng-content</h2>
+          <p class="text">
+            <span class="icon">🔄</span> 子コンポーネントのテンプレートに<code>ng-content</code>タグを配置
+          </p>
+          <div class="example">
+            <p class="code">// card.component.html (子コンポーネント)</p>
+            <p class="code">&lt;div class="card"&gt;</p>
+            <p class="code">  &lt;ng-content&gt;&lt;/ng-content&gt;</p>
+            <p class="code">&lt;/div&gt;</p>
+            <p class="code"></p>
+            <p class="code">// 親コンポーネントでの使用</p>
+            <p class="code">&lt;app-card&gt;</p>
+            <p class="code">  &lt;h3&gt;{{ '{{' }} cardTitle {{ '}}' }}&lt;/h3&gt;</p>
+            <p class="code">  &lt;p&gt;{{ '{{' }} cardContent {{ '}}' }}&lt;/p&gt;</p>
+            <p class="code">&lt;/app-card&gt;</p>
+          </div>
+          <p class="note">
+            親コンポーネントからのすべてのコンテンツは、<code>ng-content</code>タグの位置に投影されます。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 中央カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">複数のng-contentスロット</h2>
+          <p class="text">
+            <span class="icon">🔀</span> <code>select</code>属性を使用して複数のスロットを定義
+          </p>
+          <div class="example">
+            <p class="code">// panel.component.html (子コンポーネント)</p>
+            <p class="code">&lt;div class="panel"&gt;</p>
+            <p class="code">  &lt;div class="panel-header"&gt;</p>
+            <p class="code">    &lt;ng-content select="[panel-header]"&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">  &lt;div class="panel-body"&gt;</p>
+            <p class="code">    &lt;ng-content select="[panel-body]"&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">  &lt;div class="panel-footer"&gt;</p>
+            <p class="code">    &lt;ng-content select="[panel-footer]"&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">&lt;/div&gt;</p>
+          </div>
+          <div class="component-diagram">
+            <div class="parent-content">
+              <div class="component-title">親コンポーネント</div>
+              <p>&lt;app-panel&gt;</p>
+              <p>  &lt;div panel-header&gt;ヘッダー&lt;/div&gt;</p>
+              <p>  &lt;div panel-body&gt;本文&lt;/div&gt;</p>
+              <p>  &lt;div panel-footer&gt;フッター&lt;/div&gt;</p>
+              <p>&lt;/app-panel&gt;</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card glass">
+          <h2 class="section-title">select属性のセレクタ</h2>
+          <p class="text">
+            <span class="icon">🎯</span> さまざまなセレクタを使用して特定のコンテンツを選択
+          </p>
+          <table class="pipe-table">
+            <tr>
+              <th>セレクタ</th>
+              <th>説明</th>
+              <th>例</th>
+            </tr>
+            <tr>
+              <td>要素セレクタ</td>
+              <td>特定のHTML要素を選択</td>
+              <td><code>select="h1"</code></td>
+            </tr>
+            <tr>
+              <td>クラスセレクタ</td>
+              <td>特定のクラスを持つ要素を選択</td>
+              <td><code>select=".header"</code></td>
+            </tr>
+            <tr>
+              <td>属性セレクタ</td>
+              <td>特定の属性を持つ要素を選択</td>
+              <td><code>select="[header]"</code></td>
+            </tr>
+            <tr>
+              <td>IDセレクタ</td>
+              <td>特定のIDを持つ要素を選択</td>
+              <td><code>select="#main"</code></td>
+            </tr>
+          </table>
+          <p class="note">
+            セレクタはCSSセレクタと同じ構文を使用します。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 右カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">属性セレクタを使用したng-content</h2>
+          <p class="text">
+            <span class="icon">🏷️</span> HTMLタグに特定の属性を追加してコンテンツを特定のスロットに投影
+          </p>
+          <div class="example">
+            <p class="code">// base-button.component.html</p>
+            <p class="code">&lt;button class="base-button"&gt;</p>
+            <p class="code">  &lt;ng-content&gt;&lt;/ng-content&gt;</p>
+            <p class="code">&lt;/button&gt;</p>
+            <p class="code"></p>
+            <p class="code">// 親コンポーネントでの使用</p>
+            <p class="code">&lt;button baseButton&gt;</p>
+            <p class="code">  次へ &lt;span class="icon"&gt;→&lt;/span&gt;</p>
+            <p class="code">&lt;/button&gt;</p>
+          </div>
+          <p class="note">
+            属性セレクタは、ボタンやフォーム要素などのコンポーネントで特に便利です。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">デフォルトのng-content</h2>
+          <p class="text">
+            <span class="icon">📋</span> セレクタなしの<code>ng-content</code>は、他のスロットに一致しないコンテンツを受け取る
+          </p>
+          <div class="example">
+            <p class="code">&lt;div class="container"&gt;</p>
+            <p class="code">  &lt;header&gt;</p>
+            <p class="code">    &lt;ng-content select="[header]"&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/header&gt;</p>
+            <p class="code">  &lt;main&gt;</p>
+            <p class="code">    &lt;ng-content&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/main&gt;</p>
+            <p class="code">  &lt;footer&gt;</p>
+            <p class="code">    &lt;ng-content select="[footer]"&gt;&lt;/ng-content&gt;</p>
+            <p class="code">  &lt;/footer&gt;</p>
+            <p class="code">&lt;/div&gt;</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">ng-contentの利点</h2>
+          <ul class="text">
+            <li><span class="badge">利点</span> <strong>コンポーネントの再利用性</strong>: 同じコンポーネント構造を使用しながら、異なるコンテンツを表示できます。</li>
+            <li><span class="badge">利点</span> <strong>関心の分離</strong>: コンポーネントの構造とコンテンツを分離できます。</li>
+            <li><span class="badge">利点</span> <strong>柔軟性</strong>: 親コンポーネントは子コンポーネントの内部構造を知る必要がなく、必要なコンテンツを提供するだけです。</li>
+            <li><span class="badge">利点</span> <strong>メンテナンス性</strong>: コンポーネントの構造を変更しても、コンテンツに影響を与えません。</li>
+          </ul>
+          <p class="note">
+            ng-contentを使用することで、より柔軟で再利用可能なコンポーネントを作成できます。
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>出典: Angular Template Tutorial - ng-content</p>
+    </div>
+  </div>
+</body>
+</html>

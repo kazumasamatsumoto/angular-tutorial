@@ -1,0 +1,249 @@
+<div class="tutorial-container">
+  <h1>双方向バインディング</h1>
+
+  <section class="explanation">
+    <p>
+      双方向バインディングは、コンポーネントとテンプレート間でデータを同期する方法です。
+      ユーザーがフォーム要素を操作すると、コンポーネントのプロパティが更新され、
+      コンポーネントのプロパティが変更されると、フォーム要素の表示も更新されます。
+    </p>
+    <p>
+      Angular では、<code>[(ngModel)]</code> ディレクティブを使用して双方向バインディングを実現します。
+      これは「バナナ・イン・ザ・ボックス」構文とも呼ばれます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>基本的な双方向バインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <input [(ngModel)]="username" placeholder="ユーザー名">
+          <p>こんにちは、{{ username || 'ゲスト' }}さん！</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>[(ngModel)]</code> は、プロパティバインディング <code>[ngModel]</code> と
+      イベントバインディング <code>(ngModelChange)</code> の組み合わせです。
+      これにより、入力値の変更がコンポーネントのプロパティに反映され、
+      コンポーネントのプロパティの変更が入力要素に反映されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>ngModel の分解</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div class="form-group">
+            <label>[(ngModel)]:</label>
+            <input [(ngModel)]="email" placeholder="メールアドレス">
+          </div>
+          
+          <div class="form-group">
+            <label>[ngModel] + (ngModelChange):</label>
+            <input [ngModel]="email" 
+                   (ngModelChange)="email = $event" 
+                   placeholder="メールアドレス">
+          </div>
+          
+          <p *ngIf="email">入力されたメールアドレス: {{ email }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>[(ngModel)]</code> は、<code>[ngModel]</code> と <code>(ngModelChange)</code> の
+      ショートハンド構文です。分解することで、イベント発生時にカスタムロジックを実行できます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>フォーム要素での双方向バインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div class="form-group">
+            <label>ユーザー名:</label>
+            <input [(ngModel)]="username" placeholder="ユーザー名">
+          </div>
+          
+          <div class="form-group">
+            <label>パスワード:</label>
+            <input type="password" [(ngModel)]="password" placeholder="パスワード">
+          </div>
+          
+          <div class="form-group">
+            <input type="checkbox" [(ngModel)]="isSubscribed" id="subscribe">
+            <label for="subscribe">ニュースレターを購読する</label>
+          </div>
+          
+          <div class="form-group">
+            <div class="radio-group">
+              <input type="radio" [(ngModel)]="selectedPlan" value="basic" id="basic">
+              <label for="basic">ベーシック</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" [(ngModel)]="selectedPlan" value="premium" id="premium">
+              <label for="premium">プレミアム</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>国:</label>
+            <select [(ngModel)]="selectedCountry">
+              <option value="">国を選択</option>
+              <option *ngFor="let country of countries" [value]="country">
+                {{ country }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>複数選択</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div class="form-group">
+            <label>好きな果物を選択してください:</label>
+            <div *ngFor="let fruit of fruits" class="checkbox-group">
+              <input type="checkbox" 
+                     [id]="fruit"
+                     [value]="fruit"
+                     [checked]="selectedFruits.includes(fruit)"
+                     (change)="onFruitChange(fruit, $event)">
+              <label [for]="fruit">{{ fruit }}</label>
+            </div>
+            <p *ngIf="selectedFruits.length > 0">
+              選択された果物: {{ selectedFruits.join(', ') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      複数選択の場合、<code>ngModel</code> だけでは不十分なことがあります。
+      このような場合は、<code>checked</code> プロパティと <code>change</code> イベントを
+      組み合わせて使用します。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>スライダーとリアルタイム更新</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <input type="range" 
+                 [(ngModel)]="fontSize" 
+                 min="10" 
+                 max="30">
+          <p [style.fontSize.px]="fontSize">
+            フォントサイズ: {{ fontSize }}px
+          </p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      スライダーの値が変更されると、<code>fontSize</code> プロパティがリアルタイムで更新され、
+      テキストのスタイルも即座に変更されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>ネストされたオブジェクトのバインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div class="form-group">
+            <label>名前:</label>
+            <input [(ngModel)]="user.name" placeholder="名前">
+          </div>
+          <div class="form-group">
+            <label>年齢:</label>
+            <input [(ngModel)]="user.age" type="number" placeholder="年齢">
+          </div>
+          <div class="form-group">
+            <label>都市:</label>
+            <input [(ngModel)]="user.address.city" placeholder="都市">
+          </div>
+          <div class="form-group">
+            <label>郵便番号:</label>
+            <input [(ngModel)]="user.address.zipCode" placeholder="郵便番号">
+          </div>
+          
+          <div *ngIf="user.name || user.address.city" class="user-info">
+            <h4>ユーザー情報:</h4>
+            <p *ngIf="user.name">名前: {{ user.name }}</p>
+            <p>年齢: {{ user.age }}</p>
+            <p *ngIf="user.address.city">都市: {{ user.address.city }}</p>
+            <p *ngIf="user.address.zipCode">郵便番号: {{ user.address.zipCode }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>ngModel</code> は、ネストされたオブジェクトのプロパティにもバインドできます。
+      ただし、オブジェクトが初期化されていることを確認する必要があります。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>フォーム送信</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <form (submit)="onSubmit(); $event.preventDefault()">
+            <div class="form-group">
+              <label>ユーザー名:</label>
+              <input [(ngModel)]="username" name="username" placeholder="ユーザー名">
+            </div>
+            <div class="form-group">
+              <label>メールアドレス:</label>
+              <input [(ngModel)]="email" name="email" placeholder="メールアドレス">
+            </div>
+            <div class="button-group">
+              <button type="submit">送信</button>
+              <button type="button" (click)="resetForm()">リセット</button>
+            </div>
+          </form>
+          
+          <div *ngIf="formSubmitted" class="submission-info">
+            <h4>送信された情報:</h4>
+            <p>ユーザー名: {{ username }}</p>
+            <p>メールアドレス: {{ email }}</p>
+            <p>プラン: {{ selectedPlan }}</p>
+            <p>国: {{ selectedCountry || '未選択' }}</p>
+            <p>購読: {{ isSubscribed ? 'はい' : 'いいえ' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      フォームを送信すると、すべての双方向バインディングされた値がコンポーネントに
+      反映されています。これらの値を使用して、APIリクエストを送信したり、
+      他の処理を行ったりできます。
+    </p>
+  </section>
+
+  <section class="explanation">
+    <h2>双方向バインディングのベストプラクティス</h2>
+    <ul>
+      <li>フォーム要素には必ず <code>name</code> 属性を指定する（特にフォームが複数の要素を持つ場合）</li>
+      <li>大規模なフォームには、Angular の Reactive Forms を検討する</li>
+      <li>パフォーマンスのために、不必要な双方向バインディングを避ける</li>
+      <li>複雑なフォームロジックは、コンポーネントクラスに移動させる</li>
+      <li>フォームのバリデーションを適切に実装する</li>
+    </ul>
+  </section>
+</div>

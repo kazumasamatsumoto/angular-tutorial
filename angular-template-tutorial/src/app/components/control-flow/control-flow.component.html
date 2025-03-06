@@ -1,0 +1,295 @@
+<div class="control-flow-container">
+  <h1>組み込み制御フロー</h1>
+  <p class="intro">
+    Angular v17以降のテンプレートは、新しい制御フローブロックをサポートしており、要素の表示、非表示、繰り返しを条件付きで行うことができます。
+    これらの新しい構文は、以前の*ngIf、*ngForなどの構造ディレクティブに代わるものであり、より直感的で読みやすいコードを実現します。
+  </p>
+
+  <section class="example-section">
+    <h2>&#64;if、&#64;else-if、&#64;elseで条件付きのコンテンツを表示する</h2>
+    <p>
+      &#64;ifブロックは、条件式がtrueと評価された場合にのみコンテンツを表示します。
+      オプションで&#64;else-ifと&#64;elseブロックを追加して、複数の条件や代替コンテンツを提供できます。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          @if (a > b) {
+            <p>{{a}} は {{b}} より大きいです</p>
+          } @else if (b > a) {
+            <p>{{a}} は {{b}} より小さいです</p>
+          } @else {
+            <p>{{a}} は {{b}} と等しいです</p>
+          }
+          <button (click)="compareValues()">値を変更</button>
+          <p class="current-values">現在の値: a = {{a}}, b = {{b}}</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>条件式の結果への参照</h3>
+    <p>
+      &#64;ifブロックでは、asキーワードを使用して条件式の結果を変数に格納し、ブロック内で参照することができます。
+      これは、複雑なオブジェクトパスを複数回参照する必要がある場合に特に便利です。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          @if (user.profile?.settings?.startDate; as startDate) {
+            <p>開始日: {{ startDate.toLocaleDateString('ja-JP', {year: 'numeric', month: 'long', day: 'numeric'}) }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>&#64;forブロックでコンテンツを繰り返す</h2>
+    <p>
+      &#64;forブロックは、配列やイテラブルオブジェクトの各項目に対してコンテンツを繰り返します。
+      track式は各項目を一意に識別するために使用され、効率的なDOM更新を可能にします。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <div class="items-container">
+            @for (item of items; track item.id) {
+              <div class="item">{{ item.name }}</div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>&#64;forブロックのコンテキスト変数</h3>
+    <p>
+      &#64;forブロックは、繰り返し処理に関する追加情報を提供するいくつかの組み込みコンテキスト変数を提供します。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <div class="items-container">
+            @for (item of items; track item.id; let idx = $index, e = $even, f = $first, l = $last) {
+              <div [class.even-row]="e" [class.first-row]="f" [class.last-row]="l">
+                項目 #{{ idx }}: {{ item.name }}
+                @if (f) {
+                  <span class="badge first">最初</span>
+                }
+                @if (l) {
+                  <span class="badge last">最後</span>
+                }
+                @if (e) {
+                  <span class="badge even">偶数</span>
+                } @else {
+                  <span class="badge odd">奇数</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>&#64;emptyブロックを使用した&#64;forブロックのフォールバックの提供</h3>
+    <p>
+      &#64;emptyブロックを使用すると、繰り返し対象の配列やイテラブルが空の場合に表示されるフォールバックコンテンツを提供できます。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <ul class="empty-list">
+            @for (item of emptyItems; track $index) {
+              <li>{{ item.name }}</li>
+            } @empty {
+              <li class="empty-message">項目がありません。</li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>権限に基づいたナビゲーション</h3>
+    <p>
+      &#64;forと&#64;ifを組み合わせて、ユーザーの権限に基づいてナビゲーション項目を表示する例です。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <div class="permission-toggle">
+            <button (click)="toggleUserPermissions()">権限を切り替え: {{ userPermissions }}</button>
+            <p>現在の権限: {{ userPermissions }}</p>
+            <p>管理者権限: {{ user.isAdmin ? 'あり' : 'なし' }}</p>
+          </div>
+          <nav class="demo-nav">
+            <ul>
+              @for (item of menuItems; track item.id) {
+                @if (hasPermission(item.requiredPermission)) {
+                  <li><a [routerLink]="item.route">{{ item.label }}</a></li>
+                }
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>&#64;switchブロックを使用して条件付きでコンテンツを表示する</h2>
+    <p>
+      &#64;switchブロックは、式の値に基づいて複数の選択肢から一つを選択します。
+      &#64;caseブロックは特定の値に一致する場合に表示され、&#64;defaultブロックはどの&#64;caseにも一致しない場合に表示されます。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <div class="permission-toggle">
+            <button (click)="toggleUserPermissions()">権限を切り替え</button>
+          </div>
+          <div class="dashboard-container">
+            @switch (userPermissions) {
+              @case ('admin') {
+                <div class="dashboard admin">
+                  <h4>管理者ダッシュボード</h4>
+                  <p>すべての機能にアクセスできます。</p>
+                  <div class="dashboard-actions">
+                    <button>ユーザー管理</button>
+                    <button>システム設定</button>
+                    <button>ログ分析</button>
+                  </div>
+                </div>
+              }
+              @case ('reviewer') {
+                <div class="dashboard reviewer">
+                  <h4>レビュアーダッシュボード</h4>
+                  <p>コンテンツのレビューと承認ができます。</p>
+                  <div class="dashboard-actions">
+                    <button>コンテンツレビュー</button>
+                    <button>承認キュー</button>
+                  </div>
+                </div>
+              }
+              @case ('editor') {
+                <div class="dashboard editor">
+                  <h4>編集者ダッシュボード</h4>
+                  <p>コンテンツの作成と編集ができます。</p>
+                  <div class="dashboard-actions">
+                    <button>新規作成</button>
+                    <button>下書き一覧</button>
+                    <button>公開済み一覧</button>
+                  </div>
+                </div>
+              }
+              @default {
+                <div class="dashboard viewer">
+                  <h4>閲覧者ダッシュボード</h4>
+                  <p>コンテンツの閲覧のみ可能です。</p>
+                  <div class="dashboard-actions">
+                    <button>最新コンテンツ</button>
+                    <button>お気に入り</button>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>状態に基づいたコンポーネントの表示</h3>
+    <p>
+      &#64;switchを使用して、注文の状態に基づいて異なる表示を行う例です。
+    </p>
+
+    <div class="example-container">
+      <div class="result-container">
+        <h3>結果:</h3>
+        <div class="result">
+          <div class="order-toggle">
+            <button (click)="toggleOrderStatus()">注文状態を切り替え</button>
+            <p>現在の状態: {{ orderStatus }}</p>
+          </div>
+          <div class="order-container">
+            <div class="order-info">
+              <p>注文番号: {{ order.id }}</p>
+              <p>顧客名: {{ order.customer }}</p>
+              <p>合計金額: {{ order.total }}円</p>
+              <p>注文日: {{ order.date.toLocaleDateString('ja-JP') }}</p>
+            </div>
+            @switch (orderStatus) {
+              @case ('pending') {
+                <div class="order-status pending">
+                  <h4>注文保留中</h4>
+                  <p>お支払いを確認中です。</p>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 25%"></div>
+                  </div>
+                </div>
+              }
+              @case ('processing') {
+                <div class="order-status processing">
+                  <h4>処理中</h4>
+                  <p>商品を準備しています。</p>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 50%"></div>
+                  </div>
+                </div>
+              }
+              @case ('shipped') {
+                <div class="order-status shipped">
+                  <h4>発送済み</h4>
+                  <p>商品は発送されました。</p>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 75%"></div>
+                  </div>
+                </div>
+              }
+              @case ('delivered') {
+                <div class="order-status delivered">
+                  <h4>配達完了</h4>
+                  <p>商品は配達されました。</p>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 100%"></div>
+                  </div>
+                </div>
+              }
+              @default {
+                <div class="order-status unknown">
+                  <h4>不明な状態</h4>
+                  <p>注文状態を確認できません。</p>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>従来の構造ディレクティブとの比較</h2>
+    <p>
+      新しい制御フロー構文は、以前の構造ディレクティブに比べていくつかの利点があります：
+    </p>
+    <ul>
+      <li><strong>より読みやすいコード</strong>: 新しい構文は、通常のプログラミング言語の制御フロー構文に似ており、より直感的に理解できます。</li>
+      <li><strong>ネストされた条件の改善</strong>: 複数の条件を&#64;else-ifと&#64;elseブロックで簡単に表現できます。以前は、ネストされた*ngIfディレクティブを使用する必要がありました。</li>
+      <li><strong>型安全性の向上</strong>: 新しい構文は、TypeScriptの型チェックとより緊密に統合されており、型関連のエラーを早期に検出できます。</li>
+      <li><strong>パフォーマンスの最適化</strong>: 新しい制御フロー構文は、内部的に最適化されており、特に大規模なリストや複雑な条件ロジックを持つアプリケーションでパフォーマンスが向上します。</li>
+    </ul>
+  </section>
+</div>

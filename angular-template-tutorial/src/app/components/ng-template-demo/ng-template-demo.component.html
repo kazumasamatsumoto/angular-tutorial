@@ -1,0 +1,118 @@
+<div class="ng-template-demo-container">
+  <h1>ng-template によるテンプレートフラグメントの作成</h1>
+  <p class="intro">
+    <code>&lt;ng-template&gt;</code>要素を使用すると、<strong>テンプレートフラグメント</strong>、つまり動的またはプログラムによってレンダリングできるコンテンツのセクションを宣言できます。
+  </p>
+
+  <section class="example-section">
+    <h2>テンプレートフラグメントの作成</h2>
+    <p>
+      <code>&lt;ng-template&gt;</code>要素内のコンテンツは、明示的にレンダリングされるまで表示されません。
+      これは、条件付きでレンダリングするコンテンツや、複数の場所で再利用するコンテンツを定義するのに役立ちます。
+    </p>
+
+    <div class="result-container">
+      <h3>結果:</h3>
+      <div class="result">
+        <p>これは通常の要素です</p>
+
+        <ng-template>
+          <p>これはテンプレートフラグメントです</p>
+        </ng-template>
+
+        <p class="note">
+          注: テンプレートフラグメントの内容は表示されていません。これは、<code>&lt;ng-template&gt;</code>内のコンテンツが明示的にレンダリングされるまで表示されないためです。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>テンプレートフラグメントへの参照の取得</h2>
+    <p>
+      テンプレートフラグメントを使用するには、まず参照変数を使用してテンプレートへの参照を取得する必要があります。
+      これは、<code>#</code>記号を使用して行います。
+    </p>
+
+    <div class="result-container">
+      <h3>結果:</h3>
+      <div class="result">
+        <p>これは通常の要素です</p>
+
+        <ng-template #myFragment>
+          <p>これはテンプレートフラグメントです</p>
+        </ng-template>
+
+        <p class="note">
+          注: テンプレートフラグメントには<code>#myFragment</code>という参照が付けられましたが、まだレンダリングされていません。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>テンプレートフラグメントのレンダリング</h2>
+    <p>
+      <code>&lt;ng-container&gt;</code>と<code>*ngTemplateOutlet</code>ディレクティブを使用して、テンプレートフラグメントをレンダリングできます。
+      これにより、テンプレートフラグメントの内容が表示されます。
+    </p>
+
+    <div class="result-container">
+      <h3>結果:</h3>
+      <div class="result">
+        <p>これは通常の要素です</p>
+
+        <ng-template #renderFragment>
+          <p>これはフラグメントです</p>
+        </ng-template>
+
+        <ng-container *ngTemplateOutlet="renderFragment"></ng-container>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>テンプレートフラグメントのレンダリング時のパラメータの受け渡し</h2>
+    <p>
+      <code>let-</code>構文と<code>ngTemplateOutletContext</code>を使用して、テンプレートフラグメントにパラメータを渡すことができます。
+      これにより、同じテンプレートを異なるデータで再利用できます。
+    </p>
+
+    <div class="result-container">
+      <h3>結果:</h3>
+      <div class="result">
+        <ng-template #pizzaTemplate let-pizzaTopping="topping">
+          <p>選択したのは: {{pizzaTopping}}</p>
+        </ng-template>
+
+        <ng-container
+          [ngTemplateOutlet]="pizzaTemplate"
+          [ngTemplateOutletContext]="{topping: selectedTopping}"
+        ></ng-container>
+
+        <div class="topping-selector">
+          <p>トッピングを選択:</p>
+          <div class="topping-buttons">
+            @for (topping of pizzaToppings; track topping) {
+              <button 
+                (click)="selectedTopping = topping"
+                [class.selected]="selectedTopping === topping">
+                {{ topping }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h2>ng-templateの利点</h2>
+    <ul>
+      <li><strong>コードの再利用</strong>: 同じテンプレートを複数の場所で使用できます。</li>
+      <li><strong>条件付きレンダリング</strong>: 特定の条件が満たされた場合にのみコンテンツをレンダリングできます。</li>
+      <li><strong>動的コンテンツ</strong>: 実行時にテンプレートの内容を変更できます。</li>
+      <li><strong>パフォーマンス</strong>: テンプレートフラグメントは、必要になるまでDOMに追加されません。</li>
+    </ul>
+  </section>
+</div>

@@ -1,0 +1,42 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+:host:hover {
+  background-color: #303f9f;
+}
+
+:host:active {
+  background-color: #1a237e;
+}
+
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
+
+.arrow-right {
+  position: relative;
+}
+
+.arrow-right::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+}

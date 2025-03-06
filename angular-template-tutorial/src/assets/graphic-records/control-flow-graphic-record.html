@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angular制御フロー - グラフィックレコード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Zen Kurenaido', sans-serif;
+      background-color: #f9f9f9;
+      color: #334155;
+      line-height: 1.4;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #593C47;
+      padding-bottom: 15px;
+    }
+    
+    .title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #593C47, #F25C05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .date {
+      font-size: 14px;
+      color: #475569;
+    }
+    
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .column {
+      width: 33.33%;
+      padding: 15px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      border: 2px solid #F2E63D;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #F25C05;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .section-title {
+      font-family: 'Yomogi', cursive;
+      font-size: 18px;
+      color: #1e40af;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px dotted #F2C53D;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "✏️";
+      margin-right: 8px;
+    }
+    
+    .text {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      background-color: rgba(242, 197, 61, 0.3);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .arrow {
+      position: absolute;
+      width: 50px;
+      height: 30px;
+    }
+    
+    .arrow-right {
+      border-top: 2px dashed #F24405;
+      border-right: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .arrow-down {
+      border-right: 2px dashed #F24405;
+      border-bottom: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .example {
+      background-color: rgba(242, 92, 5, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #F25C05;
+    }
+    
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: 1px dotted #cbd5e1;
+    }
+    
+    .icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    
+    .connection {
+      position: absolute;
+      border: 1px dashed #593C47;
+      z-index: -1;
+    }
+    
+    .badge {
+      display: inline-block;
+      background-color: #F2C53D;
+      color: #593C47;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    
+    /* グラスモーフィズム効果 */
+    .glass {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* 手書き風の囲み線 */
+    .hand-drawn {
+      border: 2px solid #593C47;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    
+    /* 手書き風の矢印 */
+    .hand-arrow {
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .hand-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' width='100' height='20'%3E%3Cpath d='M0,10 Q25,5 50,10 T100,10 L95,5 M95,10 L95,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .flow-diagram {
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .flow-box {
+      padding: 10px;
+      border: 2px solid #F2C53D;
+      border-radius: 8px;
+      background-color: rgba(242, 230, 61, 0.1);
+      margin: 10px 0;
+      font-size: 14px;
+      position: relative;
+    }
+    
+    .flow-arrow {
+      width: 20px;
+      height: 20px;
+      margin: 5px auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='20' height='20'%3E%3Cpath d='M10,0 V15 M5,10 L10,15 L15,10' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .flow-condition {
+      width: 120px;
+      height: 60px;
+      border: 2px solid #593C47;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto;
+      font-weight: bold;
+      background-color: rgba(242, 230, 61, 0.1);
+      position: relative;
+    }
+    
+    .version-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #F25C05;
+      color: white;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Angular制御フロー</h1>
+      <div class="date">2025年3月6日</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左カラム -->
+      <div class="column">
+        <div class="card hand-drawn">
+          <h2 class="section-title">制御フローとは？</h2>
+          <p class="text">
+            <span class="icon">📌</span>Angular v17以降のテンプレートでサポートされる新しい制御フローブロック
+          </p>
+          <p class="text">
+            <span class="highlight">要素の表示、非表示、繰り返しを条件付きで行う</span>ための構文
+          </p>
+          <p class="text">
+            以前の<code>*ngIf</code>、<code>*ngFor</code>などの構造ディレクティブに代わるもの
+          </p>
+          <div class="version-badge">v17+</div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">@if、@else-if、@else</h2>
+          <p class="text">
+            <span class="icon">🔀</span> 条件式がtrueと評価された場合にのみコンテンツを表示
+          </p>
+          <div class="example">
+            <p class="code">@if (a > b) {</p>
+            <p class="code">  &lt;p&gt;{{a}} は {{b}} より大きいです&lt;/p&gt;</p>
+            <p class="code">} @else if (b > a) {</p>
+            <p class="code">  &lt;p&gt;{{a}} は {{b}} より小さいです&lt;/p&gt;</p>
+            <p class="code">} @else {</p>
+            <p class="code">  &lt;p&gt;{{a}} は {{b}} と等しいです&lt;/p&gt;</p>
+            <p class="code">}</p>
+          </div>
+          <div class="flow-diagram">
+            <div class="flow-condition">a > b ?</div>
+            <div class="flow-arrow"></div>
+            <div class="flow-box">a は b より大きい</div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">条件式の結果への参照</h2>
+          <p class="text">
+            <span class="icon">🔍</span> <code>as</code>キーワードを使用して条件式の結果を変数に格納
+          </p>
+          <div class="example">
+            <p class="code">@if (user.profile?.settings?.startDate; as startDate) {</p>
+            <p class="code">  &lt;p&gt;開始日: {{ '{{' }} startDate.toLocaleDateString() {{ '}}' }}&lt;/p&gt;</p>
+            <p class="code">}</p>
+          </div>
+          <p class="note">
+            複雑なオブジェクトパスを複数回参照する必要がある場合に特に便利です。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 中央カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">@forブロック</h2>
+          <p class="text">
+            <span class="icon">🔄</span> 配列やイテラブルオブジェクトの各項目に対してコンテンツを繰り返す
+          </p>
+          <div class="example">
+            <p class="code">@for (item of items; track item.id) {</p>
+            <p class="code">  &lt;div class="item"&gt;{{ '{{' }} item.name {{ '}}' }}&lt;/div&gt;</p>
+            <p class="code">}</p>
+          </div>
+          <p class="note">
+            <code>track</code>式は各項目を一意に識別するために使用され、効率的なDOM更新を可能にします。
+          </p>
+        </div>
+        
+        <div class="card glass">
+          <h2 class="section-title">@forブロックのコンテキスト変数</h2>
+          <p class="text">
+            <span class="icon">📊</span> 繰り返し処理に関する追加情報を提供する変数
+          </p>
+          <div class="example">
+            <p class="code">@for (item of items; track item.id;</p>
+            <p class="code">      let idx = $index, e = $even,</p>
+            <p class="code">      f = $first, l = $last) {</p>
+            <p class="code">  &lt;div [class.even-row]="e"</p>
+            <p class="code">       [class.first-row]="f"</p>
+            <p class="code">       [class.last-row]="l"&gt;</p>
+            <p class="code">    項目 #{{ '{{' }} idx {{ '}}' }}: {{ '{{' }} item.name {{ '}}' }}</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">}</p>
+          </div>
+          <ul class="text">
+            <li><code>$index</code>: 現在の項目のインデックス</li>
+            <li><code>$even</code>: インデックスが偶数かどうか</li>
+            <li><code>$odd</code>: インデックスが奇数かどうか</li>
+            <li><code>$first</code>: 最初の項目かどうか</li>
+            <li><code>$last</code>: 最後の項目かどうか</li>
+          </ul>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">@emptyブロック</h2>
+          <p class="text">
+            <span class="icon">📭</span> 繰り返し対象の配列やイテラブルが空の場合に表示されるフォールバック
+          </p>
+          <div class="example">
+            <p class="code">@for (item of emptyItems; track $index) {</p>
+            <p class="code">  &lt;li&gt;{{ '{{' }} item.name {{ '}}' }}&lt;/li&gt;</p>
+            <p class="code">} @empty {</p>
+            <p class="code">  &lt;li class="empty-message"&gt;項目がありません。&lt;/li&gt;</p>
+            <p class="code">}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 右カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">@switchブロック</h2>
+          <p class="text">
+            <span class="icon">🔀</span> 式の値に基づいて複数の選択肢から一つを選択
+          </p>
+          <div class="example">
+            <p class="code">@switch (userPermissions) {</p>
+            <p class="code">  @case ('admin') {</p>
+            <p class="code">    &lt;div class="dashboard admin"&gt;</p>
+            <p class="code">      &lt;h4&gt;管理者ダッシュボード&lt;/h4&gt;</p>
+            <p class="code">    &lt;/div&gt;</p>
+            <p class="code">  }</p>
+            <p class="code">  @case ('editor') {</p>
+            <p class="code">    &lt;div class="dashboard editor"&gt;</p>
+            <p class="code">      &lt;h4&gt;編集者ダッシュボード&lt;/h4&gt;</p>
+            <p class="code">    &lt;/div&gt;</p>
+            <p class="code">  }</p>
+            <p class="code">  @default {</p>
+            <p class="code">    &lt;div class="dashboard viewer"&gt;</p>
+            <p class="code">      &lt;h4&gt;閲覧者ダッシュボード&lt;/h4&gt;</p>
+            <p class="code">    &lt;/div&gt;</p>
+            <p class="code">  }</p>
+            <p class="code">}</p>
+          </div>
+          <p class="note">
+            <code>@case</code>ブロックは特定の値に一致する場合に表示され、<code>@default</code>ブロックはどの<code>@case</code>にも一致しない場合に表示されます。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">従来の構造ディレクティブとの比較</h2>
+          <p class="text">
+            <span class="icon">⚖️</span> 新しい制御フロー構文の利点
+          </p>
+          <ul class="text">
+            <li><span class="badge">利点</span> より読みやすいコード</li>
+            <li><span class="badge">利点</span> ネストされた条件の改善</li>
+            <li><span class="badge">利点</span> 型安全性の向上</li>
+            <li><span class="badge">利点</span> パフォーマンスの最適化</li>
+          </ul>
+          <div class="example">
+            <p class="code">// 従来の構造ディレクティブ</p>
+            <p class="code">&lt;div *ngIf="isLoggedIn; else loginTemplate"&gt;</p>
+            <p class="code">  ようこそ、{{ '{{' }} username {{ '}}' }}さん</p>
+            <p class="code">&lt;/div&gt;</p>
+            <p class="code">&lt;ng-template #loginTemplate&gt;</p>
+            <p class="code">  ログインしてください</p>
+            <p class="code">&lt;/ng-template&gt;</p>
+            <p class="code">// 新しい制御フロー構文</p>
+            <p class="code">@if (isLoggedIn) {</p>
+            <p class="code">  &lt;div&gt;ようこそ、{{ '{{' }} username {{ '}}' }}さん&lt;/div&gt;</p>
+            <p class="code">} @else {</p>
+            <p class="code">  &lt;div&gt;ログインしてください&lt;/div&gt;</p>
+            <p class="code">}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>出典: Angular Template Tutorial - 制御フロー</p>
+    </div>
+  </div>
+</body>
+</html>

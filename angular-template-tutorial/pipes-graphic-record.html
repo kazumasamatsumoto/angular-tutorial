@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angularパイプ - グラフィックレコード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Zen Kurenaido', sans-serif;
+      background-color: #f9f9f9;
+      color: #334155;
+      line-height: 1.4;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #593C47;
+      padding-bottom: 15px;
+    }
+    
+    .title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #593C47, #F25C05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .date {
+      font-size: 14px;
+      color: #475569;
+    }
+    
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .column {
+      width: 33.33%;
+      padding: 15px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      border: 2px solid #F2E63D;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #F25C05;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .section-title {
+      font-family: 'Yomogi', cursive;
+      font-size: 18px;
+      color: #1e40af;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px dotted #F2C53D;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "✏️";
+      margin-right: 8px;
+    }
+    
+    .text {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      background-color: rgba(242, 197, 61, 0.3);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .arrow {
+      position: absolute;
+      width: 50px;
+      height: 30px;
+    }
+    
+    .arrow-right {
+      border-top: 2px dashed #F24405;
+      border-right: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .arrow-down {
+      border-right: 2px dashed #F24405;
+      border-bottom: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .example {
+      background-color: rgba(242, 92, 5, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #F25C05;
+    }
+    
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: 1px dotted #cbd5e1;
+    }
+    
+    .icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    
+    .connection {
+      position: absolute;
+      border: 1px dashed #593C47;
+      z-index: -1;
+    }
+    
+    .badge {
+      display: inline-block;
+      background-color: #F2C53D;
+      color: #593C47;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    
+    /* グラスモーフィズム効果 */
+    .glass {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* 手書き風の囲み線 */
+    .hand-drawn {
+      border: 2px solid #593C47;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    
+    /* 手書き風の矢印 */
+    .hand-arrow {
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .hand-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' width='100' height='20'%3E%3Cpath d='M0,10 Q25,5 50,10 T100,10 L95,5 M95,10 L95,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .pipe-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .pipe-box {
+      padding: 10px;
+      border: 2px solid #F2C53D;
+      border-radius: 8px;
+      background-color: rgba(242, 230, 61, 0.1);
+      margin: 0 5px;
+      font-size: 14px;
+      text-align: center;
+      min-width: 100px;
+    }
+    
+    .pipe-arrow {
+      width: 30px;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20' width='30' height='20'%3E%3Cpath d='M0,10 H25 L20,5 M20,10 L20,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .pipe-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    
+    .pipe-table th, .pipe-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px;
+      font-size: 12px;
+    }
+    
+    .pipe-table th {
+      background-color: rgba(242, 230, 61, 0.2);
+      text-align: left;
+    }
+    
+    .pipe-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Angularパイプ</h1>
+      <div class="date">2025年3月6日</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左カラム -->
+      <div class="column">
+        <div class="card hand-drawn">
+          <h2 class="section-title">パイプとは？</h2>
+          <p class="text">
+            <span class="icon">📌</span>テンプレート内のデータを宣言的に変換するための特別な演算子
+          </p>
+          <p class="text">
+            <span class="highlight">構文: {{ '{{' }} 値 | パイプ名 {{ '}}' }}</span>
+          </p>
+          <div class="pipe-flow">
+            <div class="pipe-box">元のデータ</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">パイプ処理</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">変換後のデータ</div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">基本的なパイプの使用</h2>
+          <p class="text">
+            <span class="icon">🔄</span> データを表示形式に変換
+          </p>
+          <div class="example">
+            <p class="code">// 日付フォーマット</p>
+            <p class="code">{{ '{{' }} purchasedOn | date {{ '}}' }}</p>
+            <p class="code">// 結果: Mar 6, 2025</p>
+            <p class="code">// 大文字変換</p>
+            <p class="code">{{ '{{' }} company | uppercase {{ '}}' }}</p>
+            <p class="code">// 結果: ACME CORPORATION</p>
+            <p class="code">// 先頭大文字</p>
+            <p class="code">{{ '{{' }} company | titlecase {{ '}}' }}</p>
+            <p class="code">// 結果: Acme Corporation</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">組み込みパイプ</h2>
+          <p class="text">
+            <span class="icon">🧰</span> Angularが提供する標準パイプ
+          </p>
+          <table class="pipe-table">
+            <tr>
+              <th>パイプ</th>
+              <th>説明</th>
+            </tr>
+            <tr>
+              <td><code>date</code></td>
+              <td>日付をフォーマット</td>
+            </tr>
+            <tr>
+              <td><code>uppercase</code></td>
+              <td>文字列を大文字に変換</td>
+            </tr>
+            <tr>
+              <td><code>lowercase</code></td>
+              <td>文字列を小文字に変換</td>
+            </tr>
+            <tr>
+              <td><code>titlecase</code></td>
+              <td>各単語の先頭を大文字に変換</td>
+            </tr>
+            <tr>
+              <td><code>currency</code></td>
+              <td>数値を通貨形式に変換</td>
+            </tr>
+            <tr>
+              <td><code>number</code></td>
+              <td>数値をフォーマット</td>
+            </tr>
+            <tr>
+              <td><code>percent</code></td>
+              <td>数値をパーセント形式に変換</td>
+            </tr>
+            <tr>
+              <td><code>json</code></td>
+              <td>オブジェクトをJSON文字列に変換</td>
+            </tr>
+            <tr>
+              <td><code>slice</code></td>
+              <td>配列や文字列の一部を抽出</td>
+            </tr>
+            <tr>
+              <td><code>async</code></td>
+              <td>Observableやプロミスを自動的に購読</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 中央カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">パイプの連鎖</h2>
+          <p class="text">
+            <span class="icon">🔗</span> 複数のパイプを組み合わせて使用
+          </p>
+          <div class="example">
+            <p class="code">{{ '{{' }} scheduledOn | date | uppercase {{ '}}' }}</p>
+            <p class="code">// 結果: MAR 6, 2025</p>
+          </div>
+          <p class="note">
+            パイプは左から右へと順番に適用されます。最初のパイプの出力が次のパイプの入力となります。
+          </p>
+          <div class="pipe-flow">
+            <div class="pipe-box">2025-03-06</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">date</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">Mar 6, 2025</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">uppercase</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-box">MAR 6, 2025</div>
+          </div>
+        </div>
+        
+        <div class="card glass">
+          <h2 class="section-title">パイプにパラメータを渡す</h2>
+          <p class="text">
+            <span class="icon">⚙️</span> コロン（:）を使用してパラメータを指定
+          </p>
+          <div class="example">
+            <p class="code">// 日付フォーマットの指定</p>
+            <p class="code">{{ '{{' }} scheduledOn | date:'hh:mm':'UTC' {{ '}}' }}</p>
+            <p class="code">// 結果: 10:15</p>
+            <p class="code">// 通貨コードの指定</p>
+            <p class="code">{{ '{{' }} amount | currency:'JPY':'symbol':'1.0-0' {{ '}}' }}</p>
+            <p class="code">// 結果: ¥1,000</p>
+            <p class="code">// 小数点以下の桁数指定</p>
+            <p class="code">{{ '{{' }} pi | number:'1.2-2' {{ '}}' }}</p>
+            <p class="code">// 結果: 3.14</p>
+          </div>
+          <p class="note">
+            多くのパイプはパラメータを受け取ることができます。パラメータはコロン（:）で区切ります。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">日付パイプのフォーマット</h2>
+          <p class="text">
+            <span class="icon">📅</span> 日付パイプの主なフォーマットオプション
+          </p>
+          <table class="pipe-table">
+            <tr>
+              <th>フォーマット</th>
+              <th>結果例</th>
+            </tr>
+            <tr>
+              <td><code>'short'</code></td>
+              <td>3/6/25, 10:15 PM</td>
+            </tr>
+            <tr>
+              <td><code>'medium'</code></td>
+              <td>Mar 6, 2025, 10:15:33 PM</td>
+            </tr>
+            <tr>
+              <td><code>'long'</code></td>
+              <td>March 6, 2025 at 10:15:33 PM GMT+9</td>
+            </tr>
+            <tr>
+              <td><code>'full'</code></td>
+              <td>Thursday, March 6, 2025 at 10:15:33 PM Japan Standard Time</td>
+            </tr>
+            <tr>
+              <td><code>'shortDate'</code></td>
+              <td>3/6/25</td>
+            </tr>
+            <tr>
+              <td><code>'mediumDate'</code></td>
+              <td>Mar 6, 2025</td>
+            </tr>
+            <tr>
+              <td><code>'yyyy-MM-dd'</code></td>
+              <td>2025-03-06</td>
+            </tr>
+            <tr>
+              <td><code>'HH:mm:ss'</code></td>
+              <td>22:15:33</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 右カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">カスタムパイプの作成</h2>
+          <p class="text">
+            <span class="icon">🛠️</span> 独自のパイプを作成して再利用可能な変換ロジックを実装
+          </p>
+          <div class="example">
+            <p class="code">// kebab-case.pipe.ts</p>
+            <p class="code">import { Pipe, PipeTransform } from '@angular/core';</p>
+            <p class="code"></p>
+            <p class="code">@Pipe({</p>
+            <p class="code">  name: 'kebabCase',</p>
+            <p class="code">  standalone: true</p>
+            <p class="code">})</p>
+            <p class="code">export class KebabCasePipe implements PipeTransform {</p>
+            <p class="code">  transform(value: string): string {</p>
+            <p class="code">    return value</p>
+            <p class="code">      .replace(/([a-z])([A-Z])/g, '$1-$2')</p>
+            <p class="code">      .replace(/\s+/g, '-')</p>
+            <p class="code">      .toLowerCase();</p>
+            <p class="code">  }</p>
+            <p class="code">}</p>
+          </div>
+          <div class="example">
+            <p class="code">// 使用例</p>
+            <p class="code">{{ '{{' }} textForKebabCase | kebabCase {{ '}}' }}</p>
+            <p class="code">// 入力: "Hello World"</p>
+            <p class="code">// 結果: "hello-world"</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">純粋パイプと不純パイプ</h2>
+          <p class="text">
+            <span class="icon">⚙️</span> パイプの実行タイミングによる分類
+          </p>
+          <table class="pipe-table">
+            <tr>
+              <th>種類</th>
+              <th>説明</th>
+            </tr>
+            <tr>
+              <td><strong>純粋パイプ</strong></td>
+              <td>入力値が変更された場合のみ再実行される。パフォーマンスが良い。</td>
+            </tr>
+            <tr>
+              <td><strong>不純パイプ</strong></td>
+              <td>変更検出サイクルごとに再実行される。外部依存がある場合に使用。</td>
+            </tr>
+          </table>
+          <p class="note">
+            デフォルトでは、パイプは純粋です。不純パイプを作成するには、<code>@Pipe</code>デコレータで<code>pure: false</code>を指定します。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">パイプのベストプラクティス</h2>
+          <ul class="text">
+            <li><span class="badge">TIP</span> 表示形式の変換にはパイプを使用する</li>
+            <li><span class="badge">TIP</span> 複雑なロジックはコンポーネントやサービスに移動させる</li>
+            <li><span class="badge">TIP</span> パフォーマンスのために、可能な限り純粋パイプを使用する</li>
+            <li><span class="badge">TIP</span> カスタムパイプは再利用可能な変換ロジックに適している</li>
+            <li><span class="badge">TIP</span> 非同期データの表示には<code>async</code>パイプを使用する</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>出典: Angular Template Tutorial - パイプ</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angular双方向バインディング - グラフィックレコード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Zen Kurenaido', sans-serif;
+      background-color: #f9f9f9;
+      color: #334155;
+      line-height: 1.4;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #593C47;
+      padding-bottom: 15px;
+    }
+    
+    .title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #593C47, #F25C05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .date {
+      font-size: 14px;
+      color: #475569;
+    }
+    
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .column {
+      width: 33.33%;
+      padding: 15px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      border: 2px solid #F2E63D;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #F25C05;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .section-title {
+      font-family: 'Yomogi', cursive;
+      font-size: 18px;
+      color: #1e40af;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px dotted #F2C53D;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "✏️";
+      margin-right: 8px;
+    }
+    
+    .text {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      background-color: rgba(242, 197, 61, 0.3);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .arrow {
+      position: absolute;
+      width: 50px;
+      height: 30px;
+    }
+    
+    .arrow-right {
+      border-top: 2px dashed #F24405;
+      border-right: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .arrow-down {
+      border-right: 2px dashed #F24405;
+      border-bottom: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .example {
+      background-color: rgba(242, 92, 5, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #F25C05;
+    }
+    
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: 1px dotted #cbd5e1;
+    }
+    
+    .icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    
+    .connection {
+      position: absolute;
+      border: 1px dashed #593C47;
+      z-index: -1;
+    }
+    
+    .badge {
+      display: inline-block;
+      background-color: #F2C53D;
+      color: #593C47;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    
+    /* グラスモーフィズム効果 */
+    .glass {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* 手書き風の囲み線 */
+    .hand-drawn {
+      border: 2px solid #593C47;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    
+    /* 手書き風の矢印 */
+    .hand-arrow {
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .hand-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' width='100' height='20'%3E%3Cpath d='M0,10 Q25,5 50,10 T100,10 L95,5 M95,10 L95,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .two-way-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .component-box {
+      width: 120px;
+      height: 80px;
+      border: 2px solid #593C47;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background-color: rgba(242, 230, 61, 0.1);
+      position: relative;
+    }
+    
+    .two-way-arrow {
+      width: 100px;
+      height: 40px;
+      position: relative;
+      margin: 0 15px;
+    }
+    
+    .two-way-arrow::before, .two-way-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 10px;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .two-way-arrow::before {
+      top: 5px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' width='100' height='10'%3E%3Cpath d='M0,5 H95 L90,0 M90,5 L90,10' fill='none' stroke='%23F25C05' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    
+    .two-way-arrow::after {
+      bottom: 5px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' width='100' height='10'%3E%3Cpath d='M100,5 H5 L10,0 M10,5 L10,10' fill='none' stroke='%23593C47' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    
+    .banana-box {
+      position: relative;
+      padding: 10px;
+      border: 2px solid #F2C53D;
+      border-radius: 8px;
+      background-color: rgba(242, 230, 61, 0.1);
+      margin: 15px 0;
+    }
+    
+    .banana-box::before {
+      content: "🍌";
+      position: absolute;
+      top: -15px;
+      left: 10px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Angular双方向バインディング</h1>
+      <div class="date">2025年3月6日</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左カラム -->
+      <div class="column">
+        <div class="card hand-drawn">
+          <h2 class="section-title">双方向バインディングとは？</h2>
+          <p class="text">
+            <span class="icon">📌</span>コンポーネントとテンプレート間でデータを同期する方法
+          </p>
+          <p class="text">
+            <span class="highlight">データの流れが双方向</span>：ユーザー操作によるUIの変更がコンポーネントに反映され、コンポーネントの変更がUIに反映される
+          </p>
+          
+          <div class="two-way-flow">
+            <div class="component-box">コンポーネント</div>
+            <div class="two-way-arrow"></div>
+            <div class="component-box">テンプレート</div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">基本的な双方向バインディング</h2>
+          <p class="text">
+            <span class="icon">🔄</span> <span class="highlight">[(ngModel)]</span> ディレクティブを使用
+          </p>
+          <p class="text">
+            「バナナ・イン・ザ・ボックス」構文とも呼ばれる
+          </p>
+          <div class="banana-box">
+            <p class="code">&lt;input [(ngModel)]="username" placeholder="ユーザー名"&gt;</p>
+            <p class="code">&lt;p&gt;こんにちは、{{ '{{' }} username || 'ゲスト' {{ '}}' }}さん！&lt;/p&gt;</p>
+          </div>
+          <p class="note">
+            入力値の変更がコンポーネントのプロパティに反映され、コンポーネントのプロパティの変更が入力要素に反映されます。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 中央カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">ngModel の分解</h2>
+          <p class="text">
+            <span class="icon">🔍</span> <code>[(ngModel)]</code> は、プロパティバインディングとイベントバインディングの組み合わせ
+          </p>
+          <div class="example">
+            <p class="code">// 双方向バインディング</p>
+            <p class="code">&lt;input [(ngModel)]="email" placeholder="メールアドレス"&gt;</p>
+            <p class="code">// 分解した形</p>
+            <p class="code">&lt;input [ngModel]="email" </p>
+            <p class="code">       (ngModelChange)="email = $event" </p>
+            <p class="code">       placeholder="メールアドレス"&gt;</p>
+          </div>
+          <p class="note">
+            <code>[ngModel]</code>：コンポーネントからテンプレートへのバインディング<br>
+            <code>(ngModelChange)</code>：テンプレートからコンポーネントへのバインディング
+          </p>
+        </div>
+        
+        <div class="card glass">
+          <h2 class="section-title">フォーム要素での双方向バインディング</h2>
+          <p class="text">
+            <span class="icon">📝</span> さまざまなフォーム要素で使用可能
+          </p>
+          <div class="example">
+            <p class="code">// テキスト入力</p>
+            <p class="code">&lt;input [(ngModel)]="username"&gt;</p>
+            <p class="code">// パスワード</p>
+            <p class="code">&lt;input type="password" [(ngModel)]="password"&gt;</p>
+            <p class="code">// チェックボックス</p>
+            <p class="code">&lt;input type="checkbox" [(ngModel)]="isSubscribed"&gt;</p>
+            <p class="code">// ラジオボタン</p>
+            <p class="code">&lt;input type="radio" [(ngModel)]="selectedPlan" value="basic"&gt;</p>
+            <p class="code">// セレクトボックス</p>
+            <p class="code">&lt;select [(ngModel)]="selectedCountry"&gt;</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">複数選択</h2>
+          <p class="text">
+            <span class="icon">✅</span> 複数選択の場合は、<code>checked</code> と <code>change</code> を組み合わせる
+          </p>
+          <div class="example">
+            <p class="code">&lt;input type="checkbox" </p>
+            <p class="code">       [checked]="selectedFruits.includes(fruit)"</p>
+            <p class="code">       (change)="onFruitChange(fruit, $event)"&gt;</p>
+          </div>
+          <p class="note">
+            複数選択の場合、<code>ngModel</code> だけでは不十分なことがあります。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 右カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">スライダーとリアルタイム更新</h2>
+          <p class="text">
+            <span class="icon">🎚️</span> スライダーの値をリアルタイムで反映
+          </p>
+          <div class="example">
+            <p class="code">&lt;input type="range" </p>
+            <p class="code">       [(ngModel)]="fontSize" </p>
+            <p class="code">       min="10" max="30"&gt;</p>
+            <p class="code">&lt;p [style.fontSize.px]="fontSize"&gt;</p>
+            <p class="code">  フォントサイズ: {{ '{{' }} fontSize {{ '}}' }}px</p>
+            <p class="code">&lt;/p&gt;</p>
+          </div>
+          <p class="note">
+            スライダーの値が変更されると、<code>fontSize</code> プロパティがリアルタイムで更新され、テキストのスタイルも即座に変更されます。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">ネストされたオブジェクトのバインディング</h2>
+          <p class="text">
+            <span class="icon">🔄</span> オブジェクトのネストされたプロパティにもバインド可能
+          </p>
+          <div class="example">
+            <p class="code">&lt;input [(ngModel)]="user.name" placeholder="名前"&gt;</p>
+            <p class="code">&lt;input [(ngModel)]="user.age" type="number" placeholder="年齢"&gt;</p>
+            <p class="code">&lt;input [(ngModel)]="user.address.city" placeholder="都市"&gt;</p>
+          </div>
+          <p class="note">
+            オブジェクトが初期化されていることを確認する必要があります。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">双方向バインディングのベストプラクティス</h2>
+          <ul class="text">
+            <li><span class="badge">TIP</span> フォーム要素には必ず <code>name</code> 属性を指定する</li>
+            <li><span class="badge">TIP</span> 大規模なフォームには、Angular の Reactive Forms を検討する</li>
+            <li><span class="badge">TIP</span> パフォーマンスのために、不必要な双方向バインディングを避ける</li>
+            <li><span class="badge">TIP</span> 複雑なフォームロジックは、コンポーネントクラスに移動させる</li>
+            <li><span class="badge">TIP</span> フォームのバリデーションを適切に実装する</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>出典: Angular Template Tutorial - 双方向バインディング</p>
+    </div>
+  </div>
+</body>
+</html>

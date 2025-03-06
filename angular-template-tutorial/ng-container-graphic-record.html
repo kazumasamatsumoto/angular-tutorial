@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angular ng-container - グラフィックレコード</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Zen Kurenaido', sans-serif;
+      background-color: #f9f9f9;
+      color: #334155;
+      line-height: 1.4;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 2px dashed #593C47;
+      padding-bottom: 15px;
+    }
+    
+    .title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 32px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #593C47, #F25C05);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .date {
+      font-size: 14px;
+      color: #475569;
+    }
+    
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .column {
+      width: 33.33%;
+      padding: 15px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      border: 2px solid #F2E63D;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: #F25C05;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    .section-title {
+      font-family: 'Yomogi', cursive;
+      font-size: 18px;
+      color: #1e40af;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px dotted #F2C53D;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: "✏️";
+      margin-right: 8px;
+    }
+    
+    .text {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    
+    .highlight {
+      background-color: rgba(242, 197, 61, 0.3);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .code {
+      font-family: monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .arrow {
+      position: absolute;
+      width: 50px;
+      height: 30px;
+    }
+    
+    .arrow-right {
+      border-top: 2px dashed #F24405;
+      border-right: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .arrow-down {
+      border-right: 2px dashed #F24405;
+      border-bottom: 2px dashed #F24405;
+      transform: rotate(45deg);
+    }
+    
+    .example {
+      background-color: rgba(242, 92, 5, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #F25C05;
+    }
+    
+    .note {
+      font-size: 12px;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 5px;
+      border-top: 1px dotted #cbd5e1;
+    }
+    
+    .icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+    
+    .connection {
+      position: absolute;
+      border: 1px dashed #593C47;
+      z-index: -1;
+    }
+    
+    .badge {
+      display: inline-block;
+      background-color: #F2C53D;
+      color: #593C47;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-right: 5px;
+      font-weight: bold;
+    }
+    
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    
+    /* グラスモーフィズム効果 */
+    .glass {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    
+    /* 手書き風の囲み線 */
+    .hand-drawn {
+      border: 2px solid #593C47;
+      border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    
+    /* 手書き風の矢印 */
+    .hand-arrow {
+      position: relative;
+      margin: 15px 0;
+    }
+    
+    .hand-arrow::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' width='100' height='20'%3E%3Cpath d='M0,10 Q25,5 50,10 T100,10 L95,5 M95,10 L95,15' fill='none' stroke='%23F24405' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+    
+    .dom-comparison {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    
+    .dom-box {
+      width: 48%;
+      padding: 15px;
+      border: 2px solid #593C47;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .dom-title {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background-color: white;
+      padding: 0 5px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    
+    .dom-content {
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    
+    .vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #F24405;
+    }
+    
+    .use-case {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #F2C53D;
+      border-radius: 8px;
+      background-color: rgba(242, 230, 61, 0.05);
+    }
+    
+    .use-case-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #593C47;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">Angular ng-container</h1>
+      <div class="date">2025年3月6日</div>
+    </div>
+    
+    <div class="content">
+      <!-- 左カラム -->
+      <div class="column">
+        <div class="card hand-drawn">
+          <h2 class="section-title">ng-containerとは？</h2>
+          <p class="text">
+            <span class="icon">📌</span>要素をグループ化したり、DOMに実際の要素をレンダリングせずにテンプレート内の場所をマークするための特別な要素
+          </p>
+          <p class="text">
+            <span class="highlight">重要なポイント</span>：<code>ng-container</code>自体はDOMに表示されません。子要素のみが表示されます。
+          </p>
+          <div class="dom-comparison">
+            <div class="dom-box">
+              <div class="dom-title">テンプレート</div>
+              <div class="dom-content">&lt;section&gt;
+  &lt;ng-container&gt;
+    &lt;h3&gt;User bio&lt;/h3&gt;
+    &lt;p&gt;Here's some info&lt;/p&gt;
+  &lt;/ng-container&gt;
+&lt;/section&gt;</div>
+            </div>
+            <div class="vs">→</div>
+            <div class="dom-box">
+              <div class="dom-title">レンダリングされたDOM</div>
+              <div class="dom-content">&lt;section&gt;
+  &lt;h3&gt;User bio&lt;/h3&gt;
+  &lt;p&gt;Here's some info&lt;/p&gt;
+&lt;/section&gt;</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">基本的な使用法</h2>
+          <p class="text">
+            <span class="icon">🔄</span> 余分な要素を追加せずに複数の要素をグループ化
+          </p>
+          <div class="example">
+            <p class="code">// 余分なdiv要素を追加せずに構造ディレクティブを適用</p>
+            <p class="code">&lt;ng-container *ngIf="isLoggedIn"&gt;</p>
+            <p class="code">  &lt;h2&gt;ようこそ、{{ '{{' }} username {{ '}}' }}さん&lt;/h2&gt;</p>
+            <p class="code">  &lt;p&gt;最終ログイン: {{ '{{' }} lastLogin {{ '}}' }}&lt;/p&gt;</p>
+            <p class="code">&lt;/ng-container&gt;</p>
+          </div>
+          <p class="note">
+            <code>ng-container</code>を使用すると、余分なdiv要素を追加せずに複数の要素に構造ディレクティブを適用できます。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 中央カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">構造ディレクティブとの組み合わせ</h2>
+          <p class="text">
+            <span class="icon">🔀</span> 余分な要素を追加せずに構造ディレクティブを適用
+          </p>
+          <div class="example">
+            <p class="code">// *ngIf の例</p>
+            <p class="code">&lt;ng-container *ngIf="permissions === 'admin'"&gt;</p>
+            <p class="code">  &lt;h1&gt;管理者ダッシュボード&lt;/h1&gt;</p>
+            <p class="code">  &lt;div class="admin-infographic"&gt;</p>
+            <p class="code">    &lt;div class="stat"&gt;</p>
+            <p class="code">      &lt;span class="number"&gt;254&lt;/span&gt;</p>
+            <p class="code">      &lt;span class="label"&gt;ユーザー&lt;/span&gt;</p>
+            <p class="code">    &lt;/div&gt;</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">&lt;/ng-container&gt;</p>
+            <p class="code"></p>
+            <p class="code">// *ngFor の例</p>
+            <p class="code">&lt;ng-container *ngFor="let item of items; index as i"&gt;</p>
+            <p class="code">  &lt;div class="item"&gt;</p>
+            <p class="code">    &lt;h2&gt;{{ '{{' }} item.title {{ '}}' }}&lt;/h2&gt;</p>
+            <p class="code">    &lt;p&gt;{{ '{{' }} item.description {{ '}}' }}&lt;/p&gt;</p>
+            <p class="code">  &lt;/div&gt;</p>
+            <p class="code">&lt;/ng-container&gt;</p>
+          </div>
+        </div>
+        
+        <div class="card glass">
+          <h2 class="section-title">複数の構造ディレクティブの使用</h2>
+          <p class="text">
+            <span class="icon">🔄</span> 同じ要素に複数の構造ディレクティブを適用
+          </p>
+          <div class="example">
+            <p class="code">// 同じ要素に複数の構造ディレクティブを適用できない</p>
+            <p class="code">// これは動作しません</p>
+            <p class="code">&lt;div *ngIf="isVisible" *ngFor="let item of items"&gt;</p>
+            <p class="code">  {{ '{{' }} item.name {{ '}}' }}</p>
+            <p class="code">&lt;/div&gt;</p>
+            <p class="code"></p>
+            <p class="code">// ng-containerを使用して解決</p>
+            <p class="code">&lt;ng-container *ngIf="isVisible"&gt;</p>
+            <p class="code">  &lt;ng-container *ngFor="let item of items"&gt;</p>
+            <p class="code">    &lt;div&gt;{{ '{{' }} item.name {{ '}}' }}&lt;/div&gt;</p>
+            <p class="code">  &lt;/ng-container&gt;</p>
+            <p class="code">&lt;/ng-container&gt;</p>
+          </div>
+          <p class="note">
+            Angularでは、同じ要素に複数の構造ディレクティブを適用することはできません。<code>ng-container</code>を使用することで、この制限を回避できます。
+          </p>
+        </div>
+      </div>
+      
+      <!-- 右カラム -->
+      <div class="column">
+        <div class="card">
+          <h2 class="section-title">動的なコンテンツの表示</h2>
+          <p class="text">
+            <span class="icon">🔄</span> <code>ngComponentOutlet</code>ディレクティブを使用して動的にコンポーネントをレンダリング
+          </p>
+          <div class="example">
+            <p class="code">// コンポーネントクラス</p>
+            <p class="code">profileComponent = this.isAdmin</p>
+            <p class="code">  ? AdminProfileComponent</p>
+            <p class="code">  : UserProfileComponent;</p>
+            <p class="code"></p>
+            <p class="code">// テンプレート</p>
+            <p class="code">&lt;h2&gt;あなたのプロフィール&lt;/h2&gt;</p>
+            <p class="code">&lt;ng-container [ngComponentOutlet]="profileComponent"&gt;</p>
+            <p class="code">&lt;/ng-container&gt;</p>
+          </div>
+          <p class="note">
+            <code>ngComponentOutlet</code>ディレクティブを使用すると、条件に基づいて異なるコンポーネントを動的にレンダリングできます。
+          </p>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">ng-containerの使用例</h2>
+          <div class="use-case">
+            <p class="use-case-title">1. テーブルでの使用</p>
+            <p class="text">
+              テーブルでは、<code>&lt;tr&gt;</code>の直接の子要素として<code>&lt;div&gt;</code>などの要素を配置できません。<code>ng-container</code>を使用することで、余分な要素を追加せずに構造ディレクティブを適用できます。
+            </p>
+            <div class="example">
+              <p class="code">&lt;table&gt;</p>
+              <p class="code">  &lt;tbody&gt;</p>
+              <p class="code">    &lt;ng-container *ngFor="let user of users"&gt;</p>
+              <p class="code">      &lt;tr&gt;</p>
+              <p class="code">        &lt;td&gt;{{ '{{' }} user.name {{ '}}' }}&lt;/td&gt;</p>
+              <p class="code">        &lt;td&gt;{{ '{{' }} user.email {{ '}}' }}&lt;/td&gt;</p>
+              <p class="code">      &lt;/tr&gt;</p>
+              <p class="code">    &lt;/ng-container&gt;</p>
+              <p class="code">  &lt;/tbody&gt;</p>
+              <p class="code">&lt;/table&gt;</p>
+            </div>
+          </div>
+          
+          <div class="use-case">
+            <p class="use-case-title">2. 条件付きリスト項目</p>
+            <p class="text">
+              リスト内の特定の項目を条件付きで表示する場合に便利です。
+            </p>
+            <div class="example">
+              <p class="code">&lt;ul&gt;</p>
+              <p class="code">  &lt;ng-container *ngFor="let item of items"&gt;</p>
+              <p class="code">    &lt;ng-container *ngIf="item.visible"&gt;</p>
+              <p class="code">      &lt;li&gt;{{ '{{' }} item.name {{ '}}' }}&lt;/li&gt;</p>
+              <p class="code">    &lt;/ng-container&gt;</p>
+              <p class="code">  &lt;/ng-container&gt;</p>
+              <p class="code">&lt;/ul&gt;</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2 class="section-title">ng-containerの利点</h2>
+          <ul class="text">
+            <li><span class="badge">利点</span> <strong>クリーンなDOM</strong>: 余分なラッパー要素を追加せずに要素をグループ化できます。</li>
+            <li><span class="badge">利点</span> <strong>構造ディレクティブの適用</strong>: 余分な要素を追加せずに構造ディレクティブを適用できます。</li>
+            <li><span class="badge">利点</span> <strong>動的コンテンツ</strong>: ngComponentOutletと組み合わせて、動的にコンポーネントをレンダリングできます。</li>
+            <li><span class="badge">利点</span> <strong>複雑な条件付きレンダリング</strong>: 複数の条件を組み合わせて、複雑なレンダリングロジックを実現できます。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>出典: Angular Template Tutorial - ng-container</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<div class="tutorial-container">
+  <h1>式構文</h1>
+
+  <section class="explanation">
+    <p>
+      Angular の式構文は、JavaScript に基づいていますが、いくつかの重要な点で異なります。
+      テンプレート内で使用される式は、コンポーネントのプロパティやメソッドにアクセスするために使用されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>サポートされる値リテラル</h2>
+    <p>
+      Angular テンプレート内では、以下の値リテラルを使用できます。
+    </p>
+
+    <div class="demo-container">
+      <table class="syntax-table">
+        <thead>
+          <tr>
+            <th>リテラルタイプ</th>
+            <th>例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>文字列</td>
+            <td><code>'Hello'</code>, <code>"World"</code></td>
+          </tr>
+          <tr>
+            <td>ブール値</td>
+            <td><code>true</code>, <code>false</code></td>
+          </tr>
+          <tr>
+            <td>数値</td>
+            <td><code>123</code>, <code>3.14</code></td>
+          </tr>
+          <tr>
+            <td>オブジェクト</td>
+            <td><code>&#123;name: 'Alice'&#125;</code></td>
+          </tr>
+          <tr>
+            <td>配列</td>
+            <td><code>['Onion', 'Cheese', 'Garlic']</code></td>
+          </tr>
+          <tr>
+            <td>null</td>
+            <td><code>null</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>サポートされる演算子</h2>
+    <p>
+      Angular テンプレート内では、以下の演算子を使用できます。
+    </p>
+
+    <div class="demo-container">
+      <table class="syntax-table">
+        <thead>
+          <tr>
+            <th>演算子</th>
+            <th>例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>加算/連結</td>
+            <td><code>1 + 2</code></td>
+          </tr>
+          <tr>
+            <td>減算</td>
+            <td><code>52 - 3</code></td>
+          </tr>
+          <tr>
+            <td>乗算</td>
+            <td><code>41 * 6</code></td>
+          </tr>
+          <tr>
+            <td>除算</td>
+            <td><code>20 / 4</code></td>
+          </tr>
+          <tr>
+            <td>余り（剰余）</td>
+            <td><code>17 % 5</code></td>
+          </tr>
+          <tr>
+            <td>括弧</td>
+            <td><code>9 * (8 + 4)</code></td>
+          </tr>
+          <tr>
+            <td>条件式（三項演算子）</td>
+            <td><code>a > b ? true : false</code></td>
+          </tr>
+          <tr>
+            <td>論理積</td>
+            <td><code>&&</code></td>
+          </tr>
+          <tr>
+            <td>論理和</td>
+            <td><code>||</code></td>
+          </tr>
+          <tr>
+            <td>論理否定</td>
+            <td><code>!</code></td>
+          </tr>
+          <tr>
+            <td>null 合体演算子</td>
+            <td><code>const foo = null ?? 'default'</code></td>
+          </tr>
+          <tr>
+            <td>比較演算子</td>
+            <td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>==</code>, <code>===</code>, <code>!==</code></td>
+          </tr>
+          <tr>
+            <td>パイプ</td>
+            <td><code>&#123;&#123; total | currency &#125;&#125;</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>式の使用例</h2>
+    <p>
+      以下は、Angular テンプレート内での式の使用例です。
+    </p>
+
+    <div class="demo-container">
+      <h3>プロパティバインディング</h3>
+      <div class="example-row">
+        <div class="code">
+          <code>&lt;img [src]="user.profileImage"&gt;</code>
+        </div>
+        <div class="explanation">
+          <p>コンポーネントの user.profileImage プロパティを img 要素の src 属性にバインドします。</p>
+        </div>
+      </div>
+
+      <h3>イベントバインディング</h3>
+      <div class="example-row">
+        <div class="code">
+          <code>&lt;button (click)="isLoggedIn ? logout() : login()"&gt;ログイン/ログアウト&lt;/button&gt;</code>
+        </div>
+        <div class="explanation">
+          <p>三項演算子を使用して、ユーザーの状態に応じて異なるメソッドを呼び出します。</p>
+        </div>
+      </div>
+
+      <h3>テキスト補間</h3>
+      <div class="example-row">
+        <div class="code">
+          <code>&lt;p&gt;こんにちは、&#123;&#123; firstName + ' ' + lastName &#125;&#125;さん&lt;/p&gt;</code>
+        </div>
+        <div class="explanation">
+          <p>文字列連結を使用して、フルネームを表示します。</p>
+        </div>
+      </div>
+
+      <h3>パイプの使用</h3>
+      <div class="example-row">
+        <div class="code">
+          <code>&lt;p&gt;価格: &#123;&#123; price | currency:'JPY' &#125;&#125;&lt;/p&gt;</code>
+        </div>
+        <div class="explanation">
+          <p>currency パイプを使用して、数値を通貨形式で表示します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="explanation">
+    <h2>Angular 式の制限事項</h2>
+    <p>
+      Angular テンプレート式には、以下の制限があります：
+    </p>
+    <ul>
+      <li>代入式（<code>=</code>, <code>+=</code>, <code>-=</code> など）は使用できません。</li>
+      <li><code>new</code>, <code>typeof</code>, <code>instanceof</code> などの演算子は使用できません。</li>
+      <li>チェーン式（<code>;</code> で区切られた複数の式）は使用できません。</li>
+      <li>ビット演算子（<code>&</code>, <code>|</code>, <code>^</code> など）は使用できません。</li>
+      <li>インクリメント/デクリメント演算子（<code>++</code>, <code>--</code>）は使用できません。</li>
+      <li>グローバルな名前空間へのアクセス（<code>window</code>, <code>document</code> など）は制限されています。</li>
+    </ul>
+  </section>
+</div>

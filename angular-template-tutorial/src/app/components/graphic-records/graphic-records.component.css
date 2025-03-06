@@ -1,0 +1,78 @@
+.graphic-records-container {
+  font-family: 'Zen Kurenaido', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-family: 'Kaisei Decol', serif;
+  font-size: 28px;
+  color: #593C47;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px dashed #F2C53D;
+  padding-bottom: 10px;
+}
+
+.navigation {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navigation ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+
+.navigation li {
+  margin: 5px;
+}
+
+.navigation a {
+  display: block;
+  padding: 8px 15px;
+  background-color: #F2E63D;
+  color: #593C47;
+  text-decoration: none;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.navigation a:hover {
+  background-color: #F25C05;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .navigation ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .navigation li {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  .navigation a {
+    text-align: center;
+  }
+}

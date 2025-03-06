@@ -1,0 +1,195 @@
+<div class="tutorial-container">
+  <h1>イベントバインディング</h1>
+
+  <section class="explanation">
+    <p>
+      イベントバインディングは、ユーザーのアクション（クリック、キー入力、マウス移動など）に応答するための
+      Angular の機能です。イベントバインディングを使用すると、DOM イベントをコンポーネントのメソッドに
+      バインドできます。
+    </p>
+    <p>
+      イベントバインディングの構文は <code>(イベント名)="式"</code> です。イベント名は括弧 () で囲まれ、
+      等号の右側にはコンポーネントのメソッドまたは式が記述されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>基本的なクリックイベント</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <button (click)="onClick()">クリック</button>
+          <p *ngIf="clickMessage">{{ clickMessage }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      クリックイベントは最も一般的なイベントの一つです。ボタンをクリックすると、コンポーネントの
+      <code>onClick()</code> メソッドが呼び出されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>パラメータ付きのイベントハンドラー</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <button (click)="onClickWithParam('カスタムメッセージが渡されました！')">
+            パラメータ付きクリック
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      イベントハンドラーにパラメータを渡すことができます。これは、複数の要素が同じハンドラーを使用する場合や、
+      追加情報をハンドラーに提供する場合に便利です。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>マウスイベント</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div class="hover-box" 
+               (mouseover)="onMouseOver()" 
+               (mouseout)="onMouseOut()">
+            マウスを合わせてください
+          </div>
+          <p *ngIf="mouseMessage">{{ mouseMessage }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>mouseover</code> と <code>mouseout</code> は、マウスが要素に入ったときと出たときに発生する
+      イベントです。他にも <code>mousedown</code>、<code>mouseup</code>、<code>mousemove</code> などの
+      マウスイベントがあります。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>キーボードイベント</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <input (keydown)="onKeyDown($event)" 
+                 placeholder="キーを押してください">
+          <p *ngIf="keyboardMessage">{{ keyboardMessage }}</p>
+          
+          <input (input)="onInput($event)" 
+                 placeholder="入力してください">
+          <p *ngIf="inputValue">入力値: {{ inputValue }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>keydown</code>、<code>keyup</code>、<code>keypress</code> などのキーボードイベントを使用して、
+      ユーザーのキーボード入力に応答できます。<code>input</code> イベントは、入力フィールドの値が変更されたときに発生します。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>フォームイベント</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <form (submit)="onSubmit(nameInput.value)">
+            <input #nameInput placeholder="名前">
+            <button type="submit">送信</button>
+          </form>
+          <p *ngIf="submittedValue">送信された値: {{ submittedValue }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>submit</code> イベントはフォームが送信されたときに発生します。
+      <code>#nameInput</code> はテンプレート参照変数で、入力要素を参照するために使用されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>$event オブジェクト</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div (mousemove)="onMouseMove($event)"
+               class="event-area">
+            この領域でマウスを動かしてください
+          </div>
+          <p>マウス座標: X: {{ coordinates.x }}, Y: {{ coordinates.y }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      <code>$event</code> オブジェクトは、イベントに関する情報を提供します。
+      イベントの種類によって、<code>$event</code> オブジェクトのプロパティは異なります。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>イベント伝播（Event Propagation）</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div (click)="onOuterClick()" class="outer">
+            外側の要素
+            <div (click)="onInnerClick($event)" class="inner">
+              内側の要素
+            </div>
+          </div>
+          <div>
+            <p>イベントログ:</p>
+            <ul>
+              <li *ngFor="let log of propagationLog">{{ log }}</li>
+            </ul>
+            <button (click)="clearLog()">ログをクリア</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      デフォルトでは、イベントは内側の要素から外側の要素に向かって「バブリング」します。
+      <code>event.stopPropagation()</code> を使用して、イベントの伝播を停止できます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>ドラッグ＆ドロップイベント</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div draggable="true"
+               (dragstart)="onDragStart()"
+               (dragend)="onDragEnd()"
+               class="draggable">
+            {{ dragStatus }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      HTML5 のドラッグ＆ドロップ API を使用して、要素をドラッグ可能にできます。
+      <code>dragstart</code>、<code>dragend</code>、<code>dragover</code>、<code>drop</code> などの
+      イベントを使用して、ドラッグ＆ドロップの動作を制御できます。
+    </p>
+  </section>
+
+  <section class="explanation">
+    <h2>イベントバインディングのベストプラクティス</h2>
+    <ul>
+      <li>イベントハンドラーはできるだけシンプルに保ち、複雑なロジックはコンポーネントクラスに移動させる</li>
+      <li>パフォーマンスのために、不必要なイベントリスナーを避ける</li>
+      <li>大量のイベントが発生する可能性がある場合（例：<code>mousemove</code>、<code>scroll</code>）は、デバウンスやスロットルを検討する</li>
+      <li>イベントハンドラー内でのエラー処理を忘れずに行う</li>
+      <li>アクセシビリティのために、キーボードイベントとマウスイベントの両方をサポートする</li>
+    </ul>
+  </section>
+</div>

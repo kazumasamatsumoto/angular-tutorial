@@ -1,0 +1,159 @@
+<div class="tutorial-container">
+  <h1>{{ title }}</h1>
+
+  <section class="explanation">
+    <p>
+      データバインディングは、テンプレート（HTML）とコンポーネントクラス（TypeScript）の間でデータを同期する方法です。
+      Angular では、以下の種類のデータバインディングがサポートされています：
+    </p>
+    <ul>
+      <li><strong>補間（Interpolation）</strong>: <code>{{ '{{' }} プロパティ {{ '}}' }}</code> - コンポーネントからテンプレートへの一方向バインディング</li>
+      <li><strong>プロパティバインディング</strong>: <code>[プロパティ]="式"</code> - コンポーネントからテンプレートへの一方向バインディング</li>
+      <li><strong>属性バインディング</strong>: <code>[attr.属性名]="式"</code> - HTML 属性に値をバインドする</li>
+      <li><strong>クラスバインディング</strong>: <code>[class.クラス名]="条件式"</code> - 条件に基づいてクラスを適用する</li>
+      <li><strong>スタイルバインディング</strong>: <code>[style.スタイル]="式"</code> - インラインスタイルを動的に設定する</li>
+    </ul>
+  </section>
+
+  <section class="example">
+    <h2>補間（Interpolation）</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <p>ユーザー名: {{ username }}</p>
+          <p>現在の日時: {{ currentDate }}</p>
+          <p>1 + 1 = {{ 1 + 1 }}</p>
+          <p>挨拶: {{ fullGreeting }}</p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      補間は、コンポーネントのプロパティ値をテキストとしてテンプレートに表示するための最も一般的な方法です。
+      式の結果は文字列に変換されます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>プロパティバインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <img [src]="imageUrl" [alt]="title" style="width: 100px; height: auto;">
+          <p>
+            <button [disabled]="isDisabled">クリック</button>
+            <button (click)="toggleDisabled()">有効/無効の切り替え</button>
+          </p>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      プロパティバインディングは、DOM プロパティに値を設定します。角括弧 [] を使用して、
+      ターゲットプロパティを指定します。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>オブジェクトプロパティへのアクセス</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <p>名前: {{ user.name }}</p>
+          <p>メール: {{ user.email }}</p>
+          <p>役割: {{ user.role }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>属性バインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <table border="1" style="width: 100%;">
+            <tr>
+              <td [attr.colspan]="columnSpan">複数列にまたがるセル</td>
+            </tr>
+            <tr>
+              <td>列1</td>
+              <td>列2</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      属性バインディングは、DOM プロパティとして直接マッピングされない HTML 属性を設定するために使用します。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>クラスバインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <div [class.special]="isSpecial">特別なコンテンツ</div>
+          <button (click)="isSpecial = !isSpecial">クラスの切り替え</button>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      クラスバインディングを使用すると、条件に基づいて要素に CSS クラスを追加または削除できます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>スタイルバインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <p [style.backgroundColor]="highlightColor">ハイライトされたテキスト</p>
+          <p [style.fontSize.px]="fontSize">サイズ変更可能なテキスト</p>
+          <div>
+            <label>フォントサイズ: </label>
+            <input type="range" min="10" max="30" [(ngModel)]="fontSize">
+            {{ fontSize }}px
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      スタイルバインディングを使用すると、要素のインラインスタイルを動的に設定できます。
+      単位（px、em、%など）を指定することもできます。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>配列のバインディング</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <ul>
+            <li *ngFor="let item of items">{{ item }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      *ngFor ディレクティブを使用すると、配列の各項目に対して要素を繰り返し表示できます。
+    </p>
+  </section>
+
+  <section class="explanation">
+    <h2>データバインディングのベストプラクティス</h2>
+    <ul>
+      <li>単純な値の表示には補間 {{ '{{' }} {{ '}}' }} を使用する</li>
+      <li>要素のプロパティを設定するにはプロパティバインディング [property] を使用する</li>
+      <li>複雑な計算や変換には、コンポーネント内でゲッターを使用するか、パイプを使用する</li>
+      <li>パフォーマンスのために、不必要なバインディングを避ける</li>
+      <li>大きなリストや頻繁に変更されるデータには、trackBy 関数を使用して再レンダリングを最適化する</li>
+    </ul>
+  </section>
+</div>

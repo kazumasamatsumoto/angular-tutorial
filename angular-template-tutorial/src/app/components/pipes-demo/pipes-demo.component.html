@@ -1,0 +1,73 @@
+<div class="pipes-demo-container">
+  <h1>パイプ</h1>
+  
+  <section>
+    <p>
+      パイプは、Angular テンプレート式で、テンプレート内のデータを宣言的に変換することを可能にする特別な演算子です。
+    </p>
+
+
+    <div class="demo-result">
+      <h3>実行結果</h3>
+      <div class="result-box">
+        <h4>Purchases from {{ company | titlecase }} on {{ purchasedOn | date }}</h4>
+        <p>Total: {{ amount | currency }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>同じ式で複数のパイプを組み合わせる</h2>
+    <p>
+      パイプは左から右へと順番に適用されます。最初のパイプの出力が次のパイプの入力となります。
+    </p>
+
+
+    <div class="demo-result">
+      <h3>実行結果</h3>
+      <div class="result-box">
+        <p>The event will occur on {{ scheduledOn | date | uppercase }}.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>パイプにパラメータを渡す</h2>
+    <p>
+      多くのパイプはパラメータを受け取ることができます。パラメータはコロン（:）で区切ります。
+    </p>
+
+
+    <div class="demo-result">
+      <h3>実行結果</h3>
+      <div class="result-box">
+        <p>The event will occur at {{ scheduledOn | date:'hh:mm':'UTC' }}.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>カスタムパイプの作成</h2>
+    <p>
+      Angularでは独自のカスタムパイプを作成することができます。以下は、文字列をケバブケース（小文字でハイフン区切り）に変換するパイプの例です。
+    </p>
+
+
+    <div class="demo-result">
+      <h3>実行結果</h3>
+      <div class="result-box">
+        <p>Original: {{ textForKebabCase }}</p>
+        <p>Kebab Case: {{ textForKebabCase | kebabCase }}</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3>注意点</h3>
+      <p>
+        カスタムパイプを使用するには、モジュールの declarations 配列に追加するか、
+        スタンドアロンコンポーネントの場合は imports 配列に追加する必要があります。
+      </p>
+    </div>
+  </section>
+
+</div>

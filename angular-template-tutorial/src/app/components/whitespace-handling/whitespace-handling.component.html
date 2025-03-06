@@ -1,0 +1,83 @@
+<div class="tutorial-container">
+  <h1>テンプレート内の空白</h1>
+
+  <section class="explanation">
+    <p>
+      デフォルトで、Angular テンプレートはフレームワークが不要とみなす空白を保持しません。
+      これにより、生成されるHTMLのサイズが小さくなり、パフォーマンスが向上します。
+      ただし、場合によっては空白を保持したい場合があります。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>デフォルトの空白処理</h2>
+    <p>
+      デフォルトでは、Angular は複数の連続した空白を1つの空白に圧縮します。
+      また、要素間の空白も削除されます。
+    </p>
+
+    <div class="demo-container">
+      <h3>コード例</h3>
+      <pre><code>&lt;p&gt;Hello         world&lt;/p&gt;</code></pre>
+
+      <h3>レンダリング結果</h3>
+      <div class="result">
+        <p>Hello world</p>
+        <p class="note">※ 複数の空白が1つに圧縮されています</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>空白を保持する</h2>
+    <p>
+      コンポーネントレベルで空白を保持するには、<code>preserveWhitespaces</code>オプションを使用します。
+    </p>
+
+    <div class="demo-container">
+      <h3>コンポーネント定義での設定</h3>
+      <pre><code>&#64;Component(&#123;
+  /* ... */,
+  preserveWhitespaces: true,
+  template: `
+    &lt;p&gt;Hello         world&lt;/p&gt;
+  `
+&#125;)</code></pre>
+
+      <h3>レンダリング結果（空白保持）</h3>
+      <div class="result">
+        <p>Hello         world</p>
+        <p class="note">※ このコンポーネントでは<code>preserveWhitespaces: true</code>が設定されているため、複数の空白が保持されています</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="example">
+    <h2>特別なHTML空白エンティティ</h2>
+    <p>
+      Angular には、空白を制御するための特別なHTML空白エンティティ<code>&amp;ngsp;</code>があります。
+      このエンティティは、コンパイルされた出力で保持される単一のスペース文字を生成します。
+    </p>
+
+    <div class="demo-container">
+      <h3>コード例</h3>
+      <pre><code>&lt;p&gt;Hello&amp;ngsp;&amp;ngsp;&amp;ngsp;world&lt;/p&gt;</code></pre>
+
+      <h3>レンダリング結果</h3>
+      <div class="result">
+        <p>Hello&ngsp;&ngsp;&ngsp;world</p>
+        <p class="note">※ <code>&amp;ngsp;</code>エンティティによる空白が保持されています</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="explanation">
+    <h2>空白処理のベストプラクティス</h2>
+    <ul>
+      <li>デフォルトの空白処理は、ほとんどの場合で問題ありません。</li>
+      <li>特定のレイアウトで空白が重要な場合は、<code>preserveWhitespaces: true</code>を使用するか、<code>&amp;ngsp;</code>エンティティを使用します。</li>
+      <li>CSS の <code>white-space</code> プロパティを使用して、テキストの空白処理を制御することもできます。</li>
+      <li>パフォーマンスを最適化するには、グローバルに空白を保持するのではなく、必要なコンポーネントでのみ空白を保持するようにしましょう。</li>
+    </ul>
+  </section>
+</div>

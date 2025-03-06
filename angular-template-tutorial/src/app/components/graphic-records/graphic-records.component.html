@@ -1,0 +1,20 @@
+<div class="graphic-records-container">
+  <h1>Angularテンプレートチュートリアル - グラフィックレコード</h1>
+  
+  <div class="navigation">
+    <ul>
+      <li><a [routerLink]="['/graphic-records/data-binding']">データバインディング</a></li>
+      <li><a [routerLink]="['/graphic-records/event-binding']">イベントバインディング</a></li>
+      <li><a [routerLink]="['/graphic-records/two-way-binding']">双方向バインディング</a></li>
+      <li><a [routerLink]="['/graphic-records/control-flow']">制御フロー</a></li>
+      <li><a [routerLink]="['/graphic-records/pipes']">パイプ</a></li>
+      <li><a [routerLink]="['/graphic-records/ng-content']">ng-content</a></li>
+      <li><a [routerLink]="['/graphic-records/ng-template']">ng-template</a></li>
+      <li><a [routerLink]="['/graphic-records/ng-container']">ng-container</a></li>
+    </ul>
+  </div>
+  
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

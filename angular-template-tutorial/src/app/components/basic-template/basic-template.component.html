@@ -1,0 +1,66 @@
+<div class="tutorial-container">
+  <h1>テンプレートの基本</h1>
+
+  <section class="explanation">
+    <p>
+      Angular におけるテンプレートは、HTML の断片です。テンプレート内で特別な構文を使用することで、
+      Angular の多くの機能を活用できます。
+    </p>
+    <p>
+      すべての Angular コンポーネントには、コンポーネントがページにレンダリングする DOM を定義する
+      <strong>テンプレート</strong>があります。テンプレートを使用することで、Angular はデータが変化しても
+      ページを自動的に最新の状態に保つことができます。
+    </p>
+    <p>
+      テンプレートは通常、<code>*.component.ts</code>ファイルの<code>template</code>プロパティまたは
+      <code>*.component.html</code>ファイル内にあります。
+    </p>
+  </section>
+
+  <section class="example">
+    <h2>テンプレートの例</h2>
+    <div class="code-container">
+      <div class="code-block">
+        <h3>コンポーネント定義</h3>
+        <div class="code-text">
+          <p>コンポーネントのテンプレートでは、HTMLと特殊な構文を組み合わせて使用します。</p>
+          <p>例えば、二重中括弧 {{ '{{' }} と {{ '}}' }} を使用して変数の値を表示できます。</p>
+        </div>
+      </div>
+      <div class="code-block">
+        <h3>レンダリング結果</h3>
+        <div class="result">
+          <p>Your color preference is {{ theme }}.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="explanation">
+    <h2>テンプレートはどのように動作しますか？</h2>
+    <p>
+      テンプレートは、HTML 構文に基づいており、組み込みのテンプレート関数、データバインディング、
+      イベントリスニング、変数など、追加の機能が備わっています。
+    </p>
+    <p>
+      Angular はテンプレートを JavaScript にコンパイルして、アプリケーションの内部的な理解を構築します。
+      これにより、Angular がアプリケーションに自動的に適用する組み込みのレンダリング最適化が実現されます。
+    </p>
+  </section>
+
+  <section class="explanation">
+    <h2>標準 HTML との違い</h2>
+    <p>テンプレートと標準 HTML 構文の違いには、次のようなものがあります：</p>
+    <ul>
+      <li>テンプレートソースコード内のコメントは、レンダリングされた出力に含まれません。</li>
+      <li>コンポーネントとディレクティブの要素は、自己クローズできます（例：<code>&lt;UserProfile /&gt;</code>）。</li>
+      <li>特定の文字（<code>[]</code>、<code>()</code>など）を持つ属性は、Angular にとって特別な意味を持ちます。</li>
+      <li><code>&#64;</code>文字は、制御フローなどのテンプレートに動的な動作を追加するための Angular にとって特別な意味を持ちます。リテラルの<code>&#64;</code>文字を含めるには、HTML エンティティコード（<code>&amp;commat;</code>または<code>&amp;#64;</code>）としてエスケープします。</li>
+      <li>Angular は不要な空白文字を無視して折り畳みます。</li>
+      <li>Angular は、動的コンテンツのプレースホルダーとしてコメントノードをページに追加する場合がありますが、開発者はこれらを無視できます。</li>
+    </ul>
+    <p>
+      さらに、ほとんどの HTML 構文は有効なテンプレート構文ですが、Angular はテンプレート内の<code>&lt;script&gt;</code>要素をサポートしていません。
+    </p>
+  </section>
+</div>
