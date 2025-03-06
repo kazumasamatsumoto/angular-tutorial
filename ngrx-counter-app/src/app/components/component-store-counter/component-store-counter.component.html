@@ -1,0 +1,26 @@
+<div class="counter-container">
+  <h2>NGRXカウンターアプリ</h2>
+  
+  <div class="counter-section">
+    <h3>コンポーネントストアカウンター (Component Store)</h3>
+    <p class="description">ngrx/component-storeを使用した状態管理。グローバルに提供されたコンポーネントストアを使用しています。</p>
+    
+    <div class="counter-display component-store">
+      <h1>{{ count$ | async }}</h1>
+    </div>
+    
+    <div class="counter-controls">
+      <button (click)="increment()">増加</button>
+      <button (click)="decrement()">減少</button>
+      <button (click)="reset()">リセット</button>
+    </div>
+    
+    <div class="counter-custom">
+      <input type="number" [(ngModel)]="incrementAmount" />
+      <button (click)="incrementByAmount()">指定値を追加</button>
+    </div>
+  </div>
+  
+  <!-- 子コンポーネント -->
+  <app-child-counter></app-child-counter>
+</div>

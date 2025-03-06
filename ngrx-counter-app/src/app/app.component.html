@@ -1,0 +1,15 @@
+<div class="app-container">
+  <header>
+    <h1>{{ title }}</h1>
+    <nav>
+      <ul>
+        <li><a routerLink="/counter" routerLinkActive="active">カウンター</a></li>
+        <li><a routerLink="/component-store" routerLinkActive="active">コンポーネントストア</a></li>
+        <li><a routerLink="/display" routerLinkActive="active">表示のみ</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>

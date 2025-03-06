@@ -1,0 +1,43 @@
+<div class="counter-container">
+  <h2>NGRXカウンターアプリ</h2>
+  
+  <div class="counter-section">
+    <h3>グローバルカウンター (NGRX)</h3>
+    <p class="description">ページ遷移後も値が保持されます</p>
+    
+    <div class="counter-display">
+      <h1>{{ count$ | async }}</h1>
+    </div>
+    
+    <div class="counter-controls">
+      <button (click)="increment()">増加</button>
+      <button (click)="decrement()">減少</button>
+      <button (click)="reset()">リセット</button>
+    </div>
+    
+    <div class="counter-custom">
+      <input type="number" [(ngModel)]="incrementAmount" />
+      <button (click)="incrementByAmount()">指定値を追加</button>
+    </div>
+  </div>
+  
+  <div class="counter-section">
+    <h3>ローカルカウンター (Signal)</h3>
+    <p class="description">Signalを使用した状態管理。ページ遷移すると値がリセットされます</p>
+    
+    <div class="counter-display local">
+      <h1>{{ localCount() }}</h1>
+    </div>
+    
+    <div class="counter-controls">
+      <button (click)="localIncrement()">増加</button>
+      <button (click)="localDecrement()">減少</button>
+      <button (click)="localReset()">リセット</button>
+    </div>
+    
+    <div class="counter-custom">
+      <input type="number" [(ngModel)]="localIncrementAmount" />
+      <button (click)="localIncrementByAmount()">指定値を追加</button>
+    </div>
+  </div>
+</div>

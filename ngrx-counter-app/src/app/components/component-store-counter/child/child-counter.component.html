@@ -1,0 +1,15 @@
+<div class="child-counter">
+  <h3>子コンポーネント</h3>
+  <p class="description">親コンポーネントと同じコンポーネントストアを共有しています</p>
+  
+  <div class="counter-display">
+    <h2>現在のカウント: {{ count$ | async }}</h2>
+  </div>
+  
+  <div class="counter-controls">
+    <button (click)="increment()">増加</button>
+    <button (click)="decrement()">減少</button>
+  </div>
+  
+  <p class="note">このコンポーネントでの操作は親コンポーネントの表示にも反映されます</p>
+</div>

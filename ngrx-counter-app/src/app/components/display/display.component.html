@@ -1,0 +1,48 @@
+<div class="display-container">
+  <h2>カウンター表示</h2>
+
+  <div class="display-section">
+    <h3>グローバルカウンター (NGRX)</h3>
+    <div class="display-value">
+      <h1>現在のカウント: {{ count$ | async }}</h1>
+      <p>このカウンターの値はNGRXのグローバルステートから取得しています。</p>
+      <p>カウンターページで値を変更すると、このページの表示も更新されます。</p>
+      <p>
+        これはNGRXのグローバルステートがアプリケーション全体で共有されているためです。
+      </p>
+    </div>
+  </div>
+
+  <div class="display-section">
+    <h3>ローカルカウンター (Signal)</h3>
+    <div class="display-value local">
+      <h1>表示できません</h1>
+      <p>
+        Signalを使用したローカルカウンターの値はコンポーネント内でのみ管理されているため、他のコンポーネントからアクセスできません。
+      </p>
+      <p>
+        また、ページ遷移するとコンポーネントは破棄され、Signalの値もリセットされます。
+      </p>
+      <p>
+        これがSignalとNGRXの重要な違いです。Signalはコンポーネント単位の状態管理に適しています。
+      </p>
+    </div>
+  </div>
+
+  <div class="display-section">
+    <h3>コンポーネントストアカウンター (Component Store)</h3>
+    <div class="display-value component-store">
+      <h1>表示できません</h1>
+      <p>
+        ngrx/component-storeを使用したカウンターの値はコンポーネント内でのみ管理されています。
+      </p>
+      <p>
+        コンポーネントストアはコンポーネントレベルでプロバイダーとして提供されるため、
+        このDisplayComponentからはアクセスできません。
+      </p>
+      <p>
+        これがComponent StoreとNGRXの重要な違いです。Component Storeはコンポーネントとその子コンポーネント間での状態共有に適しています。
+      </p>
+    </div>
+  </div>
+</div>
