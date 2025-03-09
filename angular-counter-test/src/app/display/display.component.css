@@ -1,0 +1,18 @@
+.display-container {
+  background-color: #f0f8ff;
+  border: 1px solid #add8e6;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.display-value {
+  margin-top: 12px;
+}
+
+.count-value {
+  font-weight: bold;
+  color: #0066cc;
+  font-size: 1.2em;
+}

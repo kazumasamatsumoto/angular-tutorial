@@ -3,6 +3,10 @@
     <h1>{{ title }}</h1>
   </header>
   <main>
-    <app-counter></app-counter>
+    <!-- countChangeイベントをリッスンして、onCountChangeメソッドを呼び出す -->
+    <app-counter (countChange)="onCountChange($event)"></app-counter>
+    
+    <!-- currentCount値をdisplayコンポーネントに渡す -->
+    <app-display [countValue]="currentCount"></app-display>
   </main>
 </div>
