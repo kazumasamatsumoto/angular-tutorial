@@ -328,3 +328,337 @@ npm install --save-dev karma karma-jasmine karma-chrome-launcher karma-jasmine-h
 ## 現状でのテスト実行
 
 現在の設定でも`ng test`コマンドは正常に動作します。Angular CLI はデフォルトの Karma 設定を内部的に生成し、`angular.json`の`test`セクションと`tsconfig.spec.json`の設定に基づいてテストを実行します。特別なカスタマイズが必要ない限り、追加の`karma.conf.js`ファイルは必須ではありません。
+
+## コンポーネント間の連携と結合テスト
+
+このプロジェクトでは、コンポーネント間のデータ連携と結合テストを実装しています。
+
+### コンポーネント構成の拡張
+
+#### 1. カウンターコンポーネント（既存）の拡張
+
+カウンターコンポーネントを拡張し、カウント値の変更を外部に通知する機能を追加しました：
+
+```typescript
+import { Component, signal, Output, EventEmitter } from '@angular/core';
+
+@Component({
+  selector: 'app-counter',
+  imports: [],
+  templateUrl: './counter.component.html',
+  styleUrl: './counter.component.css',
+  standalone: true
+})
+export class CounterComponent {
+  // Signalを使用してカウンター状態を管理
+  count = signal(0);
+  
+  // カウント値の変更を通知するためのEventEmitter
+  @Output() countChange = new EventEmitter<number>();
+
+  // カウンターをインクリメントするメソッド
+  increment() {
+    this.count.update(value => value + 1);
+    // 値が変更されたことを通知
+    this.countChange.emit(this.count());
+  }
+}
+```
+
+#### 2. 表示コンポーネント（新規）の追加
+
+カウンターコンポーネントから受け取った値を表示するための新しいコンポーネントを作成しました：
+
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-display',
+  imports: [],
+  templateUrl: './display.component.html',
+  styleUrl: './display.component.css',
+  standalone: true
+})
+export class DisplayComponent {
+  // counterコンポーネントから受け取るカウント値
+  @Input() countValue: number = 0;
+}
+```
+
+表示コンポーネントのテンプレート：
+
+```html
+<div class="display-container">
+  <h2>表示コンポーネント</h2>
+  <div class="display-value">
+    <p>カウンターの現在値: <span class="count-value">{{ countValue }}</span></p>
+  </div>
+</div>
+```
+
+#### 3. アプリコンポーネントでの連携
+
+アプリコンポーネントで両方のコンポーネントを接続し、データの受け渡しを実装しました：
+
+```typescript
+import { Component } from '@angular/core';
+import { CounterComponent } from './counter/counter.component';
+import { DisplayComponent } from './display/display.component';
+
+@Component({
+  selector: 'app-root',
+  imports: [CounterComponent, DisplayComponent],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  standalone: true
+})
+export class AppComponent {
+  title = 'Angular Counter Test';
+  
+  // カウンターの値を保持する変数
+  currentCount: number = 0;
+  
+  // カウンターコンポーネントからの値を受け取るメソッド
+  onCountChange(count: number) {
+    this.currentCount = count;
+  }
+}
+```
+
+アプリコンポーネントのテンプレート：
+
+```html
+<div class="app-container">
+  <header>
+    <h1>{{ title }}</h1>
+  </header>
+  <main>
+    <!-- countChangeイベントをリッスンして、onCountChangeメソッドを呼び出す -->
+    <app-counter (countChange)="onCountChange($event)"></app-counter>
+    
+    <!-- currentCount値をdisplayコンポーネントに渡す -->
+    <app-display [countValue]="currentCount"></app-display>
+  </main>
+</div>
+```
+
+### コンポーネント間のデータフロー
+
+このアプリケーションでは、以下のようなデータフローを実装しています：
+
+1. ユーザーが「増加」ボタンをクリックする
+2. カウンターコンポーネントの `increment()` メソッドが呼び出される
+3. カウント値が更新され、`countChange` イベントが発行される
+4. アプリコンポーネントの `onCountChange()` メソッドがイベントを受け取り、`currentCount` を更新する
+5. 表示コンポーネントの `countValue` プロパティが更新され、UI が更新される
+
+### 結合テストの実装
+
+コンポーネント間の連携をテストするための結合テストを実装しました：
+
+```typescript
+// 結合テスト: コンポーネント間の連携をテスト
+describe('Counter-Display Integration Tests', () => {
+  it('should initialize with count value of 0 in both components', () => {
+    // カウンターコンポーネントの初期値を確認
+    const counterValueElement = fixture.debugElement.query(By.css('.counter-value'));
+    expect(counterValueElement.nativeElement.textContent).toBe('0');
+
+    // 表示コンポーネントの初期値を確認
+    const displayValueElement = fixture.debugElement.query(By.css('.count-value'));
+    expect(displayValueElement.nativeElement.textContent).toBe('0');
+  });
+
+  it('should update display component when counter button is clicked', () => {
+    // カウンターボタンを取得
+    const incrementButton = fixture.debugElement.query(By.css('.increment-button'));
+    
+    // ボタンをクリック
+    incrementButton.nativeElement.click();
+    fixture.detectChanges();
+    
+    // 表示コンポーネントの値が更新されたことを確認
+    const displayValueElement = fixture.debugElement.query(By.css('.count-value'));
+    expect(displayValueElement.nativeElement.textContent).toBe('1');
+    
+    // カウンターコンポーネントの値も更新されていることを確認
+    const counterValueElement = fixture.debugElement.query(By.css('.counter-value'));
+    expect(counterValueElement.nativeElement.textContent).toBe('1');
+  });
+
+  it('should update display component correctly after multiple clicks', () => {
+    // カウンターボタンを取得
+    const incrementButton = fixture.debugElement.query(By.css('.increment-button'));
+    
+    // ボタンを3回クリック
+    for (let i = 0; i < 3; i++) {
+      incrementButton.nativeElement.click();
+      fixture.detectChanges();
+    }
+    
+    // 表示コンポーネントの値が3になっていることを確認
+    const displayValueElement = fixture.debugElement.query(By.css('.count-value'));
+    expect(displayValueElement.nativeElement.textContent).toBe('3');
+  });
+
+  it('should correctly pass the count value from counter to app to display component', () => {
+    // カウンターボタンをクリック
+    const incrementButton = fixture.debugElement.query(By.css('.increment-button'));
+    incrementButton.nativeElement.click();
+    fixture.detectChanges();
+    
+    // AppComponentのcurrentCount値が1になっていることを確認
+    expect(app.currentCount).toBe(1);
+    
+    // 表示コンポーネントの値も1になっていることを確認
+    const displayValueElement = fixture.debugElement.query(By.css('.count-value'));
+    expect(displayValueElement.nativeElement.textContent).toBe('1');
+  });
+});
+```
+
+### 結合テストの意義
+
+結合テストは、複数のコンポーネントが連携して正しく動作することを確認するために重要です。このプロジェクトでは、以下の点を検証しています：
+
+1. 初期状態の確認：両方のコンポーネントが正しい初期値を持っているか
+2. イベント伝播の確認：カウンターコンポーネントのイベントが正しく親コンポーネントに伝わるか
+3. データバインディングの確認：親コンポーネントから子コンポーネントへのデータバインディングが正しく機能するか
+4. 複数回の操作後の状態確認：複数回の操作後も一貫して正しい値が表示されるか
+
+これにより、コンポーネント間の連携が意図したとおりに機能することを保証し、将来の変更によって連携が壊れないようにしています。
+
+## E2Eテスト
+
+このプロジェクトでは、Playwrightを使用したE2Eテストを実装しています。
+
+### Playwrightの導入
+
+Playwrightは、Microsoftが開発したモダンなE2Eテストフレームワークで、複数のブラウザ（Chromium、Firefox、WebKit）でのテストをサポートしています。
+
+#### インストール
+
+```bash
+# Playwrightパッケージのインストール
+npm install -D @playwright/test
+
+# ブラウザのインストール
+npx playwright install
+```
+
+#### 設定ファイル
+
+`playwright.config.ts`ファイルでテスト環境を設定しています：
+
+```typescript
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 30 * 1000,
+  expect: {
+    timeout: 5000
+  },
+  reporter: 'html',
+  use: {
+    baseURL: 'http://localhost:4200',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
+  webServer: {
+    command: 'npm run start',
+    url: 'http://localhost:4200',
+    reuseExistingServer: !process.env['CI'],
+  },
+});
+```
+
+### テストシナリオ
+
+E2Eテストでは、以下のシナリオをテストしています：
+
+1. ページタイトルの確認
+2. 初期状態でカウンターの値が0であることの確認
+3. 「増加」ボタンクリック時のカウンター値の増加確認
+4. 複数回クリック時の動作確認
+5. カウンターコンポーネントと表示コンポーネント間の値の同期確認
+6. UIコンポーネントの表示確認
+
+### テスト実装例
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('カウンターアプリケーションのE2Eテスト', () => {
+  // 各テストの前にページを読み込む
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
+  test('ページタイトルが正しく表示されること', async ({ page }) => {
+    await expect(page.locator('h1')).toHaveText('Angular Counter Test');
+  });
+
+  test('初期状態でカウンターの値が0であること', async ({ page }) => {
+    await expect(page.locator('.counter-value')).toHaveText('0');
+    await expect(page.locator('.count-value')).toHaveText('0');
+  });
+
+  test('増加ボタンをクリックするとカウンターの値が増加すること', async ({ page }) => {
+    const incrementButton = page.locator('.increment-button');
+    
+    // 初期値を確認
+    await expect(page.locator('.counter-value')).toHaveText('0');
+    
+    // ボタンをクリック
+    await incrementButton.click();
+    
+    // カウンターの値が1になったことを確認
+    await expect(page.locator('.counter-value')).toHaveText('1');
+    await expect(page.locator('.count-value')).toHaveText('1');
+  });
+});
+```
+
+### E2Eテストの実行方法
+
+E2Eテストを実行するには、以下のコマンドを使用します：
+
+```bash
+# すべてのテストを実行
+npm run e2e
+
+# UIモードでテストを実行（テストランナーUIを使用）
+npm run e2e:ui
+```
+
+### テストレポート
+
+テスト実行後、HTMLレポートが生成されます。レポートを表示するには：
+
+```bash
+npx playwright show-report
+```
+
+### E2Eテストの利点
+
+1. **実際のユーザー体験のシミュレーション**：実際のブラウザでアプリケーションを操作し、ユーザーの視点からテストします。
+2. **複数ブラウザでのテスト**：Chromium、Firefox、WebKitの3つの主要ブラウザエンジンでテストを実行し、クロスブラウザの互換性を確保します。
+3. **視覚的なデバッグ**：テスト失敗時にスクリーンショットを取得し、問題の特定を容易にします。
+4. **自動化されたテスト**：CI/CD環境で自動的にテストを実行し、継続的な品質保証を実現します。
+
+E2Eテストを単体テストや結合テストと組み合わせることで、アプリケーションの品質を多層的に保証することができます。
