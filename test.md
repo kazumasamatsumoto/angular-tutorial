@@ -2092,10 +2092,9 @@ class MyMenuItem {}
 
 @Component({
 selector: 'my-menu',
-template: `   <my-popup>
+template: `  <my-popup>
       <ng-content></ng-content>
-    </my-popup>
-`
+    </my-popup>`
 })
 class MyMenu {
 triggerText = input('');
@@ -2307,3 +2306,123 @@ When your environment wants to start handling the auto change detection status i
 If your environment wants to stop handling auto change detection status it can call `stopHandlingAutoChangeDetectionStatus()`.
 
 https://claude.ai/share/3768acea-2f8f-49d2-add5-fd6498581176
+
+この階層構造と`angular.json`の設定を踏まえると、Karma の設定は以下のように行うとよいでしょう。
+
+## Karma 設定の配置場所
+
+マルチプロジェクト構成では、通常以下の 2 つのアプローチがあります：
+
+### 1. 共通の単一の karma.conf.js を使用する場合
+
+ルートディレクトリ（angular.json と同じ階層）に`karma.conf.js`を配置します：
+
+```
+root
+|--a
+|--b
+|--c
+|--common
+|--d
+|--angular.json
+|--package.json
+|--karma.conf.js  <- ここに配置
+```
+
+こうすることで、すべてのサブプロジェクト（a,b,c,common,d）は同じ Karma 設定を共有できます。
+
+### 2. プロジェクト固有の karma.conf.js を使用する場合
+
+各サブディレクトリに独自の karma.conf.js を配置します：
+
+```
+root
+|--a
+|  |--karma.conf.js
+|--b
+|  |--karma.conf.js
+|--c
+|  |--karma.conf.js
+|--common
+|  |--karma.conf.js
+|--d
+|  |--karma.conf.js
+|--angular.json
+|--package.json
+```
+
+そして`angular.json`の各プロジェクトの設定でそれぞれの karma.conf.js を指定します。
+
+## 推奨アプローチと設定内容
+
+共有アセットやエントリーポイントが`common`ディレクトリにある構成から判断すると、**共通の単一の karma.conf.js**を使用するのが最も効率的でしょう。
+
+### ルートディレクトリの karma.conf.js 例：
+
+```javascript
+// Karma configuration file
+module.exports = function (config) {
+  config.set({
+    basePath: "",
+    frameworks: ["jasmine", "@angular-devkit/build-angular"],
+    plugins: [
+      require("karma-jasmine"),
+      require("karma-chrome-launcher"),
+      require("karma-jasmine-html-reporter"),
+      require("karma-coverage"),
+      require("@angular-devkit/build-angular/plugins/karma"),
+    ],
+    client: {
+      clearContext: false,
+    },
+    coverageReporter: {
+      dir: require("path").join(__dirname, "./coverage"),
+      subdir: ".",
+      reporters: [{ type: "html" }, { type: "text-summary" }],
+    },
+    reporters: ["progress", "kjhtml"],
+    port: 9876,
+    colors: true,
+    logLevel: config.LOG_INFO,
+    autoWatch: true,
+    browsers: ["Chrome"],
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox", "--disable-gpu"],
+      },
+    },
+    singleRun: false,
+    restartOnFileChange: true,
+    files: [
+      // 必要に応じて共通のファイルを追加
+    ],
+  });
+};
+```
+
+### angular.json の修正ポイント
+
+`angular.json`の各プロジェクトの`test`セクションで、この共通の karma.conf.js を参照します：
+
+```json
+"test": {
+  "builder": "@angular-devkit/build-angular:karma",
+  "options": {
+    "main": "./common/src/test.ts",
+    "polyfills": ["./common/src/polyfills.ts"],
+    "tsConfig": "tsconfig.spec.json",
+    "karmaConfig": "karma.conf.js",  // ルートディレクトリのkarma.conf.jsを参照
+    "assets": ["./common/src/favicon.ico", "./common/src/assets"],
+    "styles": [
+      "./common/src/styles.css",
+      "./common/src/styles.common.css"
+    ],
+    "scripts": []
+  }
+}
+```
+
+この設定では、各プロジェクト（a,b,c,common,d）は共通のテスト設定を使用しますが、TSConfig やエントリーポイント、アセットなどの特定の側面は`angular.json`内でプロジェクトごとにカスタマイズできます。
+
+複数のプロジェクトがある場合、テストを効率よく実行するために、環境変数や引数を使用して特定のプロジェクトのテストのみを実行する機能を`karma.conf.js`に追加することも検討してください。
