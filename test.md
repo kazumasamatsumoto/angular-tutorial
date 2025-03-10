@@ -2092,10 +2092,10 @@ class MyMenuItem {}
 
 @Component({
 selector: 'my-menu',
-template: `    <my-popup>
+template: `   <my-popup>
       <ng-content></ng-content>
     </my-popup>
- `
+`
 })
 class MyMenu {
 triggerText = input('');
@@ -2305,3 +2305,5 @@ In order to support the `manualChangeDetection` and parallel APIs, your environm
 
 When your environment wants to start handling the auto change detection status it can call `handleAutoChangeDetectionStatus(handler)`. The handler function will receive a `AutoChangeDetectionStatus` which has two properties `isDisabled` and `onDetectChangesNow()`. See the [AutoChangeDetectionStatus API reference page](https://material.angular.io/cdk/test-harnesses/api#AutoChangeDetectionStatus) for more information.
 If your environment wants to stop handling auto change detection status it can call `stopHandlingAutoChangeDetectionStatus()`.
+
+https://claude.ai/share/3768acea-2f8f-49d2-add5-fd6498581176
