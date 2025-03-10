@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angularテスト総合ガイド</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol&family=Yomogi&family=Zen+Kurenaido&display=swap');
+        
+        :root {
+            --color-1: #593C47;
+            --color-2: #F2E63D;
+            --color-3: #F2C53D;
+            --color-4: #F25C05;
+            --color-5: #F24405;
+            --text-color: #334155;
+            --heading-color: #1e40af;
+        }
+        
+        body {
+            font-family: 'Zen Kurenaido', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.4;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px dashed var(--color-4);
+            padding-bottom: 20px;
+        }
+        
+        .title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--color-1), var(--color-5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .date {
+            font-family: 'Yomogi', cursive;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-3);
+        }
+        
+        .section-title {
+            font-family: 'Kaisei Decol', serif;
+            font-size: 18px;
+            color: var(--heading-color);
+            border-bottom: 2px solid var(--color-3);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .content {
+            font-size: 14px;
+        }
+        
+        .highlight {
+            background: linear-gradient(transparent 60%, var(--color-2) 60%);
+            display: inline;
+        }
+        
+        .code-block {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 12px;
+            border-left: 4px solid var(--color-4);
+            margin: 10px 0;
+        }
+        
+        .hand-drawn-box {
+            border: 3px solid var(--color-1);
+            border-radius: 15px;
+            padding: 10px;
+            position: relative;
+            margin: 15px 0;
+            background-color: rgba(242, 230, 61, 0.05);
+        }
+        
+        .hand-drawn-box::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            width: 60px;
+            height: 12px;
+            background-color: white;
+        }
+        
+        .hand-drawn-arrow {
+            position: relative;
+            margin: 20px 0;
+            font-family: 'Yomogi', cursive;
+            padding-left: 30px;
+        }
+        
+        .hand-drawn-arrow::before {
+            content: "↓";
+            position: absolute;
+            left: 10px;
+            font-size: 20px;
+            color: var(--color-5);
+        }
+        
+        .key-point {
+            font-weight: bold;
+            color: var(--color-5);
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: var(--color-3);
+            color: var(--color-1);
+            border-radius: 30px;
+            padding: 2px 8px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .icon-small {
+            font-size: 16px;
+            vertical-align: middle;
+        }
+        
+        .icon-medium {
+            font-size: 24px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        
+        .icon-large {
+            font-size: 32px;
+            display: block;
+            margin: 10px auto;
+            text-align: center;
+        }
+        
+        .connection-line {
+            position: absolute;
+            border-top: 2px dashed var(--color-4);
+            width: 80px;
+            transform-origin: left;
+        }
+        
+        .bubble {
+            border-radius: 20px;
+            background-color: rgba(242, 196, 61, 0.2);
+            padding: 12px;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .bubble::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid rgba(242, 196, 61, 0.2);
+            bottom: -15px;
+            left: 20%;
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .steps li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .steps li::before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: -2px;
+            background-color: var(--color-3);
+            color: var(--color-1);
+            font-weight: bold;
+            font-size: 14px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-color);
+            border-top: 2px dashed var(--color-4);
+            padding-top: 20px;
+        }
+        
+        .glossmorphic {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 手書き風の装飾 */
+        .scribble {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        #scribble1 {
+            top: 100px;
+            right: 50px;
+            width: 200px;
+            height: 150px;
+            border: 3px solid var(--color-5);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+        
+        #scribble2 {
+            bottom: 120px;
+            left: 80px;
+            width: 150px;
+            height: 150px;
+            border: 3px solid var(--color-3);
+            border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%;
+        }
+        
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .diagram-box {
+            text-align: center;
+            background-color: white;
+            border: 2px solid var(--color-1);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        .diagram-arrow {
+            font-size: 24px;
+            color: var(--color-4);
+            margin: 5px 0;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="scribble" id="scribble1"></div>
+        <div class="scribble" id="scribble2"></div>
+        
+        <div class="header">
+            <h1 class="title">🧪 Angularテスト総合ガイド 🧪</h1>
+            <div class="date">2025年3月7日</div>
+        </div>
+        
+        <div class="grid">
+            <!-- 1列目 -->
+            <div>
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">📚</span>テスト環境の設定
+                    </h2>
+                    <div class="content">
+                        <p>Angular CLIは<span class="highlight">Jasmine</span>テストフレームワークを使用して、すべての必要なものを自動的にセットアップします。</p>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>基本コマンド</strong>
+                            <div class="code-block">ng test</div>
+                            <p>⚡ アプリケーションを<span class="key-point">監視モード</span>でビルドし、<span class="key-point">Karma</span>テストランナーを起動します。</p>
+                        </div>
+                        
+                        <div class="bubble">
+                            結果はブラウザに表示され、簡単にテスト進捗が確認できます。テスト行をクリックして特定のテストだけを再実行することも可能です！
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">📊</span>コードカバレッジ
+                    </h2>
+                    <div class="content">
+                        <p>テストがコードベースをどの程度カバーしているか確認することは重要です。</p>
+                        
+                        <div class="code-block">ng test --no-watch --code-coverage</div>
+                        
+                        <div class="hand-drawn-arrow">
+                            実行結果
+                        </div>
+                        
+                        <p>✅ <span class="key-point">/coverage</span>ディレクトリが作成されます</p>
+                        <p>✅ <span class="key-point">index.html</span>でカバレッジレポートを確認</p>
+                        <p>✅ カバレッジの閾値を設定して<span class="highlight">品質を強制</span>することも！</p>
+                        
+                        <div class="diagram">
+                            <div class="diagram-box">コードカバレッジ</div>
+                            <div class="diagram-arrow">↓</div>
+                            <div class="two-column">
+                                <div class="diagram-box">ステートメント</div>
+                                <div class="diagram-box">関数</div>
+                            </div>
+                            <div class="diagram-arrow">↓</div>
+                            <div class="two-column">
+                                <div class="diagram-box">ブランチ</div>
+                                <div class="diagram-box">行</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2列目 -->
+            <div>
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">🧩</span>テストの種類
+                    </h2>
+                    <div class="content">
+                        <div class="hand-drawn-box">
+                            <span class="badge">基本</span>
+                            <strong>単体テスト（サービス）</strong>
+                            <p>個々の関数やサービスが期待通りに動作するかテスト</p>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <span class="badge">重要</span>
+                            <strong>コンポーネントテスト</strong>
+                            <p>コンポーネントのレンダリングと振る舞いをテスト</p>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <span class="badge">高度</span>
+                            <strong>統合テスト</strong>
+                            <p>複数のコンポーネントの相互作用をテスト</p>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <span class="badge">E2E</span>
+                            <strong>エンドツーエンドテスト</strong>
+                            <p>実際のユーザー操作をシミュレート</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">🔧</span>TestBedの使用
+                    </h2>
+                    <div class="content">
+                        <p><span class="highlight">TestBed</span>はAngularのテストユーティリティの中で最も重要なツールです。</p>
+                        
+                        <div class="code-block">TestBed.configureTestingModule({
+  declarations: [MyComponent],
+  providers: [
+    { provide: RealService, useClass: MockService }
+  ]
+});</div>
+                        
+                        <ul class="steps">
+                            <li>テスト用の環境を構成</li>
+                            <li>モックサービスを提供</li>
+                            <li>コンポーネントをインスタンス化</li>
+                            <li>デバッグ要素を取得してテスト</li>
+                        </ul>
+                        
+                        <p class="key-point">💡 Tip: <code>fixture.detectChanges()</code>を呼び出すまで、データバインディングは更新されません！</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3列目 -->
+            <div>
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">⏱️</span>非同期テスト
+                    </h2>
+                    <div class="content">
+                        <p>非同期操作のテストには特別なテクニックが必要です：</p>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>fakeAsync + tick</strong>
+                            <div class="code-block">it('should test async', fakeAsync(() => {
+  // テストコード
+  tick(500); // 500ms時間を進める
+  expect(result).toBe('expected');
+}));</div>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>waitForAsync</strong>
+                            <div class="code-block">it('should test async', waitForAsync(() => {
+  // テストコード
+  fixture.whenStable().then(() => {
+    expect(result).toBe('expected');
+  });
+}));</div>
+                        </div>
+                        
+                        <div class="bubble">
+                            <p>💡 <span class="key-point">fakeAsync</span>は同期的なコードのように書けるため読みやすく、<span class="key-point">waitForAsync</span>はすべての場面で動作します。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="icon-medium">🔍</span>コンポーネントハーネス
+                    </h2>
+                    <div class="content">
+                        <p>コンポーネントハーネスは、テストとコンポーネントの実装詳細を絶縁します。</p>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>ハーネスの利点</strong>
+                            <ul>
+                                <li>DOM構造に依存しない安定したテスト</li>
+                                <li>読みやすく保守しやすいテスト</li>
+                                <li>複数のテスト環境で再利用可能</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="code-block">it('should load button', async () => {
+  const button = await loader.getHarness(MyButtonHarness);
+  expect(await button.getText()).toBe('Click me');
+});</div>
+                        
+                        <p class="key-point">特に共有UIコンポーネントのテストに最適！</p>
+                        
+                        <div class="diagram">
+                            <div class="diagram-box">テスト</div>
+                            <div class="diagram-arrow">↔️</div>
+                            <div class="diagram-box">ハーネス</div>
+                            <div class="diagram-arrow">↔️</div>
+                            <div class="diagram-box">コンポーネント</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 実践的なテクニック（横長セクション） -->
+        <div style="margin-top: 30px;">
+            <div class="card" style="grid-column: span 3;">
+                <h2 class="section-title">
+                    <span class="icon-medium">💼</span>実践的なテクニック
+                </h2>
+                <div class="content">
+                    <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="hand-drawn-box">
+                            <strong>モックとスパイの使用</strong>
+                            <p>サービスの振る舞いをシミュレート</p>
+                            <div class="code-block">const serviceSpy = jasmine.createSpyObj('Service', ['method']);</div>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>要素の検査</strong>
+                            <p>DOM要素の状態を確認</p>
+                            <div class="code-block">const el = fixture.debugElement.query(By.css('h1'));</div>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>イベントのシミュレート</strong>
+                            <p>ユーザー操作を再現</p>
+                            <div class="code-block">component.triggerEventHandler('click', {});</div>
+                        </div>
+                        
+                        <div class="hand-drawn-box">
+                            <strong>コンポーネントの分離</strong>
+                            <p>不要な依存関係をスタブ化</p>
+                            <div class="code-block">TestBed.overrideComponent(...);</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>出典: Angular公式ドキュメント | 作成日: 2025年3月7日 | Angularテスト総合ガイド</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,7 +3,8 @@
 
   <section class="explanation">
     <p>
-      Angular には、テンプレート内で 2 種類の変数宣言があります。ローカルテンプレート変数とテンプレート参照変数です。
+      Angular には、テンプレート内で 2
+      種類の変数宣言があります。ローカルテンプレート変数とテンプレート参照変数です。
       これらの変数を使用することで、テンプレート内でデータを保存したり、DOM要素を参照したりすることができます。
     </p>
   </section>
@@ -15,30 +16,28 @@
       これらの変数は、テンプレート内の特定のスコープ内でのみ使用できます。
     </p>
 
-    <div class="code-example">
-      <pre><code>&#64;let name = user.name;
-&#64;let greeting = 'Hello, ' + name;
-&#64;let data = data$ | async;
-&#64;let pi = 3.1459;
-&#64;let coordinates = &#123;x: 50, y: 100&#125;;</code></pre>
-    </div>
-
     <div class="demo-container">
       <h3>実際の例</h3>
-      
+
       <div class="user-profile">
         <h4>&#64;letの値を参照する</h4>
-        <img [src]="'https://via.placeholder.com/150'" alt="ユーザー写真" class="user-photo">
+        <img
+          [src]="'https://via.placeholder.com/150'"
+          alt="ユーザー写真"
+          class="user-photo"
+        />
         <h3>こんにちは、山田太郎さん</h3>
-        
+
         <h4>お気に入りのスナック:</h4>
         <ul>
           <li>ポテトチップス</li>
           <li>チョコレート</li>
           <li>アイスクリーム</li>
         </ul>
-        
-        <button (click)="update({name: '山田太郎'})">プロフィールを更新</button>
+
+        <button (click)="update({ name: '山田太郎' })">
+          プロフィールを更新
+        </button>
       </div>
     </div>
   </section>
@@ -50,37 +49,32 @@
       #記号を使用して宣言します。
     </p>
 
-    <div class="code-example">
-      <pre><code>&lt;!-- "taskInput" という名前のテンプレート参照変数を、HTMLInputElementに関連付ける --&gt;
-&lt;input #taskInput placeholder="Enter task name"&gt;</code></pre>
-    </div>
-
     <div class="demo-container">
       <h3>実際の例</h3>
-      
+
       <div class="task-input">
-        <input #taskInput placeholder="タスク名を入力">
+        <input #taskInput placeholder="タスク名を入力" />
         <button (click)="addTask(taskInput)">タスクを追加</button>
       </div>
-      
+
       <p class="note">
         入力フィールドに何かを入力し、「タスクを追加」ボタンをクリックすると、
         テンプレート参照変数を通じて入力値にアクセスします。
       </p>
-    </div>
-
-    <div class="code-example">
-      <h3>コンポーネントインスタンスの参照</h3>
-      <pre><code>&lt;!-- `startDate` 変数は、`MyDatepicker` のインスタンスに代入されます。 --&gt;
-&lt;my-datepicker #startDate /&gt;</code></pre>
     </div>
   </section>
 
   <section class="explanation">
     <h2>ローカルテンプレート変数とテンプレート参照変数の違い</h2>
     <ul>
-      <li><strong>ローカルテンプレート変数 (&#64;let)</strong>: テンプレート内で値を保存するために使用します。</li>
-      <li><strong>テンプレート参照変数 (#)</strong>: DOM要素やコンポーネントを参照するために使用します。</li>
+      <li>
+        <strong>ローカルテンプレート変数 (&#64;let)</strong>:
+        テンプレート内で値を保存するために使用します。
+      </li>
+      <li>
+        <strong>テンプレート参照変数 (#)</strong>:
+        DOM要素やコンポーネントを参照するために使用します。
+      </li>
     </ul>
     <p>
       両方の変数タイプは、テンプレート内でのみ使用でき、コンポーネントクラスからは直接アクセスできません。

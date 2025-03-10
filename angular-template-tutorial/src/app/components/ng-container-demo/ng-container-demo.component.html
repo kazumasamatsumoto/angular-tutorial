@@ -1,13 +1,16 @@
 <div class="ng-container-demo-container">
   <h1>ng-container による要素のグループ化</h1>
   <p class="intro">
-    <code>&lt;ng-container&gt;</code>は Angular の特別な要素で、複数の要素をグループ化したり、DOM に実際の要素をレンダリングせずにテンプレート内の場所をマークしたりします。
+    <code>&lt;ng-container&gt;</code>は Angular
+    の特別な要素で、複数の要素をグループ化したり、DOM
+    に実際の要素をレンダリングせずにテンプレート内の場所をマークしたりします。
   </p>
 
   <section class="example-section">
     <h2>基本的な使用法</h2>
     <p>
-      <code>&lt;ng-container&gt;</code>は、DOM に追加の要素を追加せずに複数の要素をグループ化するために使用できます。
+      <code>&lt;ng-container&gt;</code>は、DOM
+      に追加の要素を追加せずに複数の要素をグループ化するために使用できます。
       これは、余分なdiv要素を追加せずに構造ディレクティブを適用したい場合に特に便利です。
     </p>
 
@@ -25,12 +28,14 @@
 
         <div class="dom-representation">
           <h4>レンダリングされたDOM:</h4>
-          <pre><code>&lt;section&gt;
+          <pre ngNonBindable><code>&lt;section&gt;
   &lt;h3&gt;User bio&lt;/h3&gt;
   &lt;p&gt;Here's some info about the user&lt;/p&gt;
 &lt;/section&gt;</code></pre>
           <p class="note">
-            注: <code>&lt;ng-container&gt;</code>自体はDOMに表示されません。子要素のみが表示されます。
+            注:
+            <code>&lt;ng-container&gt;</code
+            >自体はDOMに表示されません。子要素のみが表示されます。
           </p>
         </div>
       </div>
@@ -38,9 +43,12 @@
   </section>
 
   <section class="example-section">
-    <h2><code>&lt;ng-container&gt;</code>を使用して動的なコンテンツを表示する</h2>
+    <h2>
+      <code>&lt;ng-container&gt;</code>を使用して動的なコンテンツを表示する
+    </h2>
     <p>
-      <code>&lt;ng-container&gt;</code>と<code>ngComponentOutlet</code>ディレクティブを組み合わせると、
+      <code>&lt;ng-container&gt;</code
+      >と<code>ngComponentOutlet</code>ディレクティブを組み合わせると、
       動的にコンポーネントをレンダリングできます。これは、条件に基づいて異なるコンポーネントを表示する場合に便利です。
     </p>
 
@@ -50,13 +58,14 @@
         <div class="dynamic-component-demo">
           <h2>あなたのプロフィール</h2>
           <ng-container [ngComponentOutlet]="profileComponent"></ng-container>
-          
+
           <div class="toggle-container">
             <button (click)="toggleAdmin()">
-              {{ isAdmin ? '一般ユーザーに切り替え' : '管理者に切り替え' }}
+              {{ isAdmin ? "一般ユーザーに切り替え" : "管理者に切り替え" }}
             </button>
             <p class="current-status">
-              現在のステータス: <strong>{{ isAdmin ? '管理者' : '一般ユーザー' }}</strong>
+              現在のステータス:
+              <strong>{{ isAdmin ? "管理者" : "一般ユーザー" }}</strong>
             </p>
           </div>
         </div>
@@ -67,7 +76,8 @@
   <section class="example-section">
     <h2><code>&lt;ng-container&gt;</code>を構造ディレクティブで使用</h2>
     <p>
-      <code>&lt;ng-container&gt;</code>は、DOM に余分な要素を追加せずに構造ディレクティブ（<code>*ngIf</code>、<code>*ngFor</code>など）を適用するのに最適です。
+      <code>&lt;ng-container&gt;</code>は、DOM
+      に余分な要素を追加せずに構造ディレクティブ（<code>*ngIf</code>、<code>*ngFor</code>など）を適用するのに最適です。
       これにより、クリーンなDOMを維持しながら、複雑な条件付きレンダリングを実現できます。
     </p>
 
@@ -78,18 +88,20 @@
           <div class="permissions-demo">
             <h4>*ngIf の例:</h4>
             <div class="permissions-toggle">
-              <button 
+              <button
                 [class.selected]="permissions === 'user'"
-                (click)="permissions = 'user'">
+                (click)="permissions = 'user'"
+              >
                 一般ユーザー
               </button>
-              <button 
+              <button
                 [class.selected]="permissions === 'admin'"
-                (click)="permissions = 'admin'">
+                (click)="permissions = 'admin'"
+              >
                 管理者
               </button>
             </div>
-            
+
             <div class="permissions-result">
               <ng-container *ngIf="permissions === 'admin'">
                 <h1>管理者ダッシュボード</h1>
@@ -108,17 +120,21 @@
                   </div>
                 </div>
               </ng-container>
-              
+
               <ng-container *ngIf="permissions !== 'admin'">
-                <p class="no-access">管理者ダッシュボードにアクセスする権限がありません。</p>
+                <p class="no-access">
+                  管理者ダッシュボードにアクセスする権限がありません。
+                </p>
               </ng-container>
             </div>
           </div>
-          
+
           <div class="ngfor-demo">
             <h4>*ngFor の例:</h4>
             <div class="items-list">
-              <ng-container *ngFor="let item of items; index as i; trackBy: trackByFn">
+              <ng-container
+                *ngFor="let item of items; index as i; trackBy: trackByFn"
+              >
                 <div class="item">
                   <h2>{{ item.title }}</h2>
                   <p>{{ item.description }}</p>
@@ -134,10 +150,22 @@
   <section class="example-section">
     <h2>ng-containerの利点</h2>
     <ul>
-      <li><strong>クリーンなDOM</strong>: 余分なラッパー要素を追加せずに要素をグループ化できます。</li>
-      <li><strong>構造ディレクティブの適用</strong>: 余分な要素を追加せずに構造ディレクティブを適用できます。</li>
-      <li><strong>動的コンテンツ</strong>: ngComponentOutletと組み合わせて、動的にコンポーネントをレンダリングできます。</li>
-      <li><strong>複雑な条件付きレンダリング</strong>: 複数の条件を組み合わせて、複雑なレンダリングロジックを実現できます。</li>
+      <li>
+        <strong>クリーンなDOM</strong>:
+        余分なラッパー要素を追加せずに要素をグループ化できます。
+      </li>
+      <li>
+        <strong>構造ディレクティブの適用</strong>:
+        余分な要素を追加せずに構造ディレクティブを適用できます。
+      </li>
+      <li>
+        <strong>動的コンテンツ</strong>:
+        ngComponentOutletと組み合わせて、動的にコンポーネントをレンダリングできます。
+      </li>
+      <li>
+        <strong>複雑な条件付きレンダリング</strong>:
+        複数の条件を組み合わせて、複雑なレンダリングロジックを実現できます。
+      </li>
     </ul>
   </section>
 </div>

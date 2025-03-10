@@ -13,14 +13,6 @@
     </p>
 
     <div class="example-container">
-      <div class="code-example">
-        <h3>コンポーネント使用例:</h3>
-        <pre><code>&lt;app-card&gt;
-  &lt;h3&gt;{{ cardTitle }}&lt;/h3&gt;
-  &lt;p&gt;{{ cardContent }}&lt;/p&gt;
-&lt;/app-card&gt;</code></pre>
-      </div>
-
       <div class="result-container">
         <h3>結果:</h3>
         <div class="result">
@@ -41,21 +33,6 @@
     </p>
 
     <div class="example-container">
-      <div class="code-example">
-        <h3>コンポーネント使用例:</h3>
-        <pre><code>&lt;app-panel&gt;
-  &lt;div panel-header&gt;
-    &lt;h3&gt;{{ panelTitle }}&lt;/h3&gt;
-  &lt;/div&gt;
-  &lt;div panel-body&gt;
-    &lt;p&gt;{{ panelContent }}&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div panel-footer&gt;
-    {{ panelFooter }}
-  &lt;/div&gt;
-&lt;/app-panel&gt;</code></pre>
-      </div>
-
       <div class="result-container">
         <h3>結果:</h3>
         <div class="result">
@@ -83,19 +60,10 @@
     </p>
 
     <div class="example-container">
-      <div class="code-example">
-        <h3>コンポーネント使用例:</h3>
-        <pre><code>&lt;button baseButton&gt;
-  次へ &lt;span class="icon"&gt;→&lt;/span&gt;
-&lt;/button&gt;</code></pre>
-      </div>
-
       <div class="result-container">
         <h3>結果:</h3>
         <div class="result">
-          <button baseButton>
-            次へ <span class="icon">→</span>
-          </button>
+          <button baseButton>次へ <span class="icon">→</span></button>
         </div>
       </div>
     </div>
@@ -104,10 +72,22 @@
   <section class="example-section">
     <h2>ng-contentの利点</h2>
     <ul>
-      <li><strong>コンポーネントの再利用性</strong>: 同じコンポーネント構造を使用しながら、異なるコンテンツを表示できます。</li>
-      <li><strong>関心の分離</strong>: コンポーネントの構造とコンテンツを分離できます。</li>
-      <li><strong>柔軟性</strong>: 親コンポーネントは子コンポーネントの内部構造を知る必要がなく、必要なコンテンツを提供するだけです。</li>
-      <li><strong>メンテナンス性</strong>: コンポーネントの構造を変更しても、コンテンツに影響を与えません。</li>
+      <li>
+        <strong>コンポーネントの再利用性</strong>:
+        同じコンポーネント構造を使用しながら、異なるコンテンツを表示できます。
+      </li>
+      <li>
+        <strong>関心の分離</strong>:
+        コンポーネントの構造とコンテンツを分離できます。
+      </li>
+      <li>
+        <strong>柔軟性</strong>:
+        親コンポーネントは子コンポーネントの内部構造を知る必要がなく、必要なコンテンツを提供するだけです。
+      </li>
+      <li>
+        <strong>メンテナンス性</strong>:
+        コンポーネントの構造を変更しても、コンテンツに影響を与えません。
+      </li>
     </ul>
   </section>
 </div>
