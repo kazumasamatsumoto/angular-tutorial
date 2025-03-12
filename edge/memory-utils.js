@@ -7,32 +7,43 @@
 
 class MemoryUtils {
   constructor() {
+    // シミュレーション用の初期メモリ情報
     this.memoryInfo = {
-      jsHeapSizeLimit: 0,
-      totalJSHeapSize: 0,
-      usedJSHeapSize: 0
+      jsHeapSizeLimit: 4 * 1024 * 1024 * 1024, // 4GB
+      totalJSHeapSize: 100 * 1024 * 1024,      // 初期値100MB
+      usedJSHeapSize: 10 * 1024 * 1024         // 初期値10MB
     };
     
     this.memoryHistory = [];
     this.maxHistoryLength = 50;
     this.updateInterval = null;
+    
+    // 前回の値を保存するためのオブジェクト
+    this._prevValues = {};
+    
+    // シミュレーション用のメモリ使用量（MB単位）
+    this._simulatedMemoryUsage = 10; // 初期値10MB
+    
+    // 各操作のメモリ使用履歴
+    this._memoryOperations = [];
   }
 
   /**
-   * 現在のメモリ使用状況を取得
-   * performance.memory APIを使用（Chromeベースのブラウザのみ対応）
+   * 現在のメモリ使用状況を取得（シミュレーション）
    */
   getMemoryInfo() {
-    // performance.memory はChrome/Edgeのみで利用可能
-    if (window.performance && window.performance.memory) {
-      this.memoryInfo = {
-        jsHeapSizeLimit: window.performance.memory.jsHeapSizeLimit,
-        totalJSHeapSize: window.performance.memory.totalJSHeapSize,
-        usedJSHeapSize: window.performance.memory.usedJSHeapSize
-      };
-    } else {
-      console.warn('performance.memory APIはこのブラウザでは利用できません。Edgeブラウザを使用してください。');
-    }
+    // シミュレーションされたメモリ使用量（バイト単位）
+    const usedJSHeapSize = this._simulatedMemoryUsage * 1024 * 1024;
+    
+    // 合計ヒープサイズは使用量の1.2倍（最大でヒープサイズ上限まで）
+    const totalJSHeapSize = Math.min(usedJSHeapSize * 1.2, this.memoryInfo.jsHeapSizeLimit);
+    
+    // メモリ情報を更新
+    this.memoryInfo = {
+      jsHeapSizeLimit: 4 * 1024 * 1024 * 1024, // 4GB
+      totalJSHeapSize: totalJSHeapSize,
+      usedJSHeapSize: usedJSHeapSize
+    };
     
     return this.memoryInfo;
   }
@@ -58,7 +69,22 @@ class MemoryUtils {
     const element = document.getElementById(elementId);
     
     if (element) {
-      element.textContent = `メモリ使用量: ${this.formatBytes(memInfo.usedJSHeapSize)} / ${this.formatBytes(memInfo.jsHeapSizeLimit)}`;
+      // 前回の値を保存して変化を表示
+      const prevValue = this._prevValues[elementId] || 0;
+      this._prevValues[elementId] = memInfo.usedJSHeapSize;
+      
+      const diff = memInfo.usedJSHeapSize - prevValue;
+      let diffText = '';
+      
+      if (Math.abs(diff) > 1024 * 1024) { // 1MB以上の変化があった場合のみ表示
+        if (diff > 0) {
+          diffText = ` (+${this.formatBytes(diff)})`;
+        } else if (diff < 0) {
+          diffText = ` (-${this.formatBytes(Math.abs(diff))})`;
+        }
+      }
+      
+      element.textContent = `メモリ使用量: ${this.formatBytes(memInfo.usedJSHeapSize)} / ${this.formatBytes(memInfo.jsHeapSizeLimit)}${diffText}`;
     }
     
     return memInfo;
@@ -109,11 +135,36 @@ class MemoryUtils {
     }
     
     if (memoryDetails) {
+      // 前回の値との差分を計算
+      const prevTotal = this._prevValues['total'] || 0;
+      this._prevValues['total'] = memInfo.usedJSHeapSize;
+      
+      const diff = memInfo.usedJSHeapSize - prevTotal;
+      let diffText = '';
+      
+      if (Math.abs(diff) > 1024 * 1024) { // 1MB以上の変化があった場合のみ表示
+        if (diff > 0) {
+          diffText = `\n前回から変化: +${this.formatBytes(diff)} 増加`;
+        } else if (diff < 0) {
+          diffText = `\n前回から変化: -${this.formatBytes(Math.abs(diff))} 減少`;
+        }
+      }
+      
+      // 操作履歴を表示
+      let operationsText = '';
+      if (this._memoryOperations.length > 0) {
+        operationsText = '\n\n最近の操作:';
+        const recentOps = this._memoryOperations.slice(-3); // 最新の3つの操作を表示
+        recentOps.forEach(op => {
+          operationsText += `\n- ${op}`;
+        });
+      }
+      
       memoryDetails.textContent = `
 使用中のJSヒープサイズ: ${this.formatBytes(memInfo.usedJSHeapSize)}
 合計JSヒープサイズ: ${this.formatBytes(memInfo.totalJSHeapSize)}
 JSヒープサイズ上限: ${this.formatBytes(memInfo.jsHeapSizeLimit)}
-使用率: ${((memInfo.usedJSHeapSize / memInfo.jsHeapSizeLimit) * 100).toFixed(2)}%
+使用率: ${((memInfo.usedJSHeapSize / memInfo.jsHeapSizeLimit) * 100).toFixed(2)}%${diffText}${operationsText}
       `;
     }
   }
@@ -127,6 +178,12 @@ JSヒープサイズ上限: ${this.formatBytes(memInfo.jsHeapSizeLimit)}
     
     // 新しい監視を開始
     this.updateInterval = setInterval(() => {
+      // メモリリーク実験中は少しずつメモリ使用量を増加させる
+      if (window.leakInterval) {
+        this._simulatedMemoryUsage += 2; // 2MB増加
+        this.addMemoryOperation('メモリリーク: +2MB');
+      }
+      
       this.recordMemoryUsage();
       this.updateMemoryChart();
     }, intervalMs);
@@ -140,6 +197,77 @@ JSヒープサイズ上限: ${this.formatBytes(memInfo.jsHeapSizeLimit)}
       clearInterval(this.updateInterval);
       this.updateInterval = null;
     }
+  }
+  
+  /**
+   * 操作履歴に追加
+   */
+  addMemoryOperation(operation) {
+    const timestamp = new Date().toLocaleTimeString();
+    this._memoryOperations.push(`${timestamp} - ${operation}`);
+    
+    // 履歴の長さを制限
+    if (this._memoryOperations.length > 10) {
+      this._memoryOperations.shift();
+    }
+  }
+  
+  /**
+   * シミュレーションでメモリを消費する
+   * @param {number} mbSize 消費するメモリサイズ（MB単位）
+   */
+  allocateMemory(mbSize) {
+    // シミュレーションされたメモリ使用量を増加
+    this._simulatedMemoryUsage += mbSize;
+    
+    // 操作履歴に追加
+    this.addMemoryOperation(`メモリ確保: +${mbSize}MB`);
+    
+    console.log(`${mbSize}MBのメモリを確保しました（シミュレーション）`);
+    
+    // メモリ使用量を更新
+    this.updateMemoryDisplay('memoryUsage');
+    this.updateMemoryDisplay('leakMemoryUsage');
+    this.updateMemoryDisplay('gcMemoryUsage');
+    this.updateMemoryChart();
+    
+    return mbSize;
+  }
+  
+  /**
+   * シミュレーションでメモリを解放する
+   * @param {number} percent 解放する割合（0-100）
+   */
+  freeMemory(percent = 100) {
+    const originalUsage = this._simulatedMemoryUsage;
+    
+    if (percent >= 100) {
+      // 基本値（10MB）まで減少
+      const releasedAmount = this._simulatedMemoryUsage - 10;
+      this._simulatedMemoryUsage = 10;
+      
+      // 操作履歴に追加
+      this.addMemoryOperation(`メモリ解放: -${releasedAmount}MB (全解放)`);
+      
+      console.log(`${releasedAmount}MBのメモリを解放しました（シミュレーション）`);
+    } else {
+      // 指定された割合のメモリを解放
+      const releaseAmount = Math.floor((this._simulatedMemoryUsage - 10) * (percent / 100));
+      this._simulatedMemoryUsage -= releaseAmount;
+      
+      // 操作履歴に追加
+      this.addMemoryOperation(`メモリ解放: -${releaseAmount}MB (${percent}%)`);
+      
+      console.log(`${releaseAmount}MBのメモリを解放しました（シミュレーション）`);
+    }
+    
+    // メモリ使用量を更新
+    this.updateMemoryDisplay('memoryUsage');
+    this.updateMemoryDisplay('leakMemoryUsage');
+    this.updateMemoryDisplay('gcMemoryUsage');
+    this.updateMemoryChart();
+    
+    return originalUsage - this._simulatedMemoryUsage;
   }
 }
 
