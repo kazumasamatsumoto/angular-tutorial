@@ -1,5 +1,5 @@
 ```ts
-// This file is required by karma.conf.js and loads recursively all the .spec and framework files
+// カスタムプロジェクト構造用のテスト設定
 import "zone.js/testing";
 import { getTestBed } from "@angular/core/testing";
 import {
@@ -7,35 +7,26 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 
-// Initialize the Angular testing environment
+// 基本のAngularテスト環境を初期化
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
 
-console.log("テスト環境が初期化されました");
+console.log("カスタム構造向けのテスト環境が初期化されました");
 
-// Angular 14以降では、テストファイルの検出は自動的に行われるため、
-// require.contextを明示的に使用する必要はありません。
-// angular.jsonの設定に従って自動的にテストファイルが検出されます。
-
-// テストの手動検出は必要ありません。
-// もしテスト実行時に問題が発生する場合は、
-// Angular CLIの設定を確認してください。
+// Angularが自動的にテストファイルを検出するのを待ちます
 ```
 
 ```ts
 "test": {
   "builder": "@angular-devkit/build-angular:karma",
   "options": {
-    "main": "src/test.ts",
-    "polyfills": ["zone.js", "zone.js/testing"],
+    "main": "common/src/test.ts",
+    "polyfills": ["@angular/localize/init", "zone.js", "zone.js/testing"],
     "tsConfig": "tsconfig.spec.json",
     "karmaConfig": "karma.conf.js",
-    "inlineStyleLanguage": "css",
     "assets": [
-      "src/favicon.ico",
-      "src/assets",
       {
         "glob": "**/*",
         "input": "./common/src/assets/",
@@ -56,61 +47,56 @@ console.log("テスト環境が初期化されました");
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": [
-      "jasmine",
-      "node"
-    ]
+    "types": ["jasmine", "node"]
   },
+  "files": [
+    "common/src/test.ts"
+  ],
   "include": [
-    "src/**/*.spec.ts",
-    "src/**/*.d.ts",
     "common/src/**/*.spec.ts",
     "common/src/**/*.d.ts"
-  ],
-  "files": [
-    "src/test.ts"
   ]
 }
 ```
 
 ```ts
-import { TestBed } from "@angular/core/testing";
-import { Component } from "@angular/core";
-
-// テスト用のダミーコンポーネント
-@Component({
-  selector: "app-dummy",
-  template: "<div>ダミーコンポーネント</div>",
-})
-class DummyComponent {}
-
-describe("基本テスト", () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DummyComponent],
-    }).compileComponents();
-  });
-
-  it("真がtrueであること", () => {
-    console.log("基本テストが実行されました");
+describe("サンプルテスト", () => {
+  it("基本的なテストが動くこと", () => {
+    console.log("カスタム構造のテストが実行されました！");
     expect(true).toBeTruthy();
-  });
-
-  it("コンポーネントが作成できること", () => {
-    const fixture = TestBed.createComponent(DummyComponent);
-    const component = fixture.componentInstance;
-    expect(component).toBeTruthy();
   });
 });
 ```
 
 ```ts
-import { TestBed } from "@angular/core/testing";
-
-describe("Common基本テスト", () => {
-  it("真がtrueであること", () => {
-    console.log("Common内のテストが実行されました");
-    expect(true).toBeTruthy();
+// Karma configuration file
+module.exports = function (config) {
+  config.set({
+    basePath: "",
+    frameworks: ["jasmine", "@angular-devkit/build-angular"],
+    plugins: [
+      require("karma-jasmine"),
+      require("karma-chrome-launcher"),
+      require("karma-jasmine-html-reporter"),
+      require("karma-coverage"),
+      require("@angular-devkit/build-angular/plugins/karma"),
+    ],
+    client: {
+      clearContext: false,
+    },
+    jasmineHtmlReporter: {
+      suppressAll: true,
+    },
+    coverageReporter: {
+      dir: require("path").join(__dirname, "./coverage/frontend"),
+      subdir: ".",
+      reporters: [{ type: "html" }, { type: "text-summary" }],
+    },
+    reporters: ["progress", "kjhtml"],
+    browsers: ["Chrome"],
+    restartOnFileChange: true,
+    // ログレベルを上げて詳細情報を表示
+    logLevel: config.LOG_DEBUG,
   });
-});
+};
 ```
