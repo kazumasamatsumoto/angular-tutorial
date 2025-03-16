@@ -1,0 +1,308 @@
+<div class="container">
+  <div class="action-buttons">
+    <button type="button" class="generate-btn" (click)="onSubmit()">
+      PDF生成
+    </button>
+    <button type="button" class="reset-btn" (click)="resetForm()">
+      リセット
+    </button>
+  </div>
+
+  <form [formGroup]="reportForm">
+    <div id="nursing-report" class="report-container">
+      <div class="report-header">
+        <h2>訪問看護報告書</h2>
+      </div>
+
+      <table class="report-table">
+        <tr>
+          <th class="label">利用者氏名</th>
+          <td class="value">
+            <input type="text" formControlName="patientName" />
+          </td>
+          <th class="label">生年月日</th>
+          <td class="value birth-date">
+            <input type="text" formControlName="birthYear" class="year-input" />
+            年
+            <input
+              type="text"
+              formControlName="birthMonth"
+              class="month-input"
+            />
+            月
+            <input type="text" formControlName="birthDay" class="day-input" />
+            日
+          </td>
+        </tr>
+        <tr>
+          <th class="label">事業所提供元の情報</th>
+          <td class="value" colspan="3">
+            <input type="text" formControlName="caregiverFacility" />
+          </td>
+        </tr>
+        <tr>
+          <th class="label">要介護認定の区分</th>
+          <td colspan="3">
+            <div class="care-level-container">
+              <span>要支援（</span>
+              @for (level of [1, 2]; track level) {
+              <label class="care-level-label">
+                <input
+                  type="radio"
+                  [value]="level"
+                  formControlName="requireCareLevel"
+                />
+                <span class="care-level-circle">{{ level }}</span>
+              </label>
+              }
+              <span>）</span>
+
+              <span class="care-level-separator">要介護（</span>
+              @for (level of [1, 2, 3, 4, 5]; track level) {
+              <label class="care-level-label">
+                <input
+                  type="radio"
+                  [value]="level + 2"
+                  formControlName="requireCareLevel"
+                />
+                <span class="care-level-circle">{{ level }}</span>
+              </label>
+              }
+              <span>）</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">住所</th>
+          <td colspan="3"></td>
+        </tr>
+        <tr>
+          <th class="label">訪問日</th>
+          <td colspan="3">
+            <div class="calendar-row">
+              <!-- 3月カレンダー -->
+              <div class="calendar">
+                <div class="calendar-header">2025 年 3 月</div>
+                <table class="exact-calendar">
+                  <tr>
+                    @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                      @if (getVisitDatesArray()[day-1]) {
+                      <span class="symbol circle"></span>
+                      }
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [8, 9, 10, 11, 12, 13, 14]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                      @if (getVisitDatesArray()[day-1]) {
+                      <span class="symbol circle"></span>
+                      }
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [15, 16, 17, 18, 19, 20, 21]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                      @if (getVisitDatesArray()[day-1]) {
+                      <span class="symbol circle"></span>
+                      }
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [22, 23, 24, 25, 26, 27, 28]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                      @if (getVisitDatesArray()[day-1]) {
+                      <span class="symbol circle"></span>
+                      }
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [29, 30, 31]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                      @if (getVisitDatesArray()[day-1]) {
+                      <span class="symbol circle"></span>
+                      }
+                    </td>
+                    } @for (empty of [1, 2, 3, 4]; track empty) {
+                    <td></td>
+                    }
+                  </tr>
+                </table>
+              </div>
+
+              <!-- 4月カレンダー -->
+              <div class="calendar">
+                <div class="calendar-header">2025 年 4 月</div>
+                <table class="exact-calendar">
+                  <tr>
+                    @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [8, 9, 10, 11, 12, 13, 14]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [15, 16, 17, 18, 19, 20, 21]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [22, 23, 24, 25, 26, 27, 28]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                    </td>
+                    }
+                  </tr>
+                  <tr>
+                    @for (day of [29, 30]; track day) {
+                    <td>
+                      <span class="date-text">{{ day }}</span>
+                    </td>
+                    } @for (empty of [1, 2, 3, 4, 5]; track empty) {
+                    <td></td>
+                    }
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="calendar-note">
+              訪問日を〇で囲むこと。理学療法士、作業療法士又は言語聴覚士による訪問看護を実施した場合は◇、特別訪問看護指示書に基づく訪問看護を実施した日は△で囲むこと。緊急時訪問を行った場合は×印とすること。なお、右表は訪問日が２月にわたる場合使用すること。
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">特記の内容</th>
+          <td colspan="3" class="multi-line">
+            <textarea formControlName="specialNotes"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">看護の内容</th>
+          <td colspan="3" class="multi-line">
+            <textarea formControlName="nursingContent"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">家族等の介護状況</th>
+          <td colspan="3" class="multi-line">
+            <textarea formControlName="familyCooperation"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">衛生材料等の使用量および使用状況</th>
+          <td colspan="3">
+            <div class="material-grid">
+              <div class="material-row">
+                <span>衛生材料等の名称：（</span>
+                <input
+                  type="text"
+                  formControlName="materialName"
+                  class="material-input"
+                />
+                <span>）</span>
+              </div>
+              <div class="material-row">
+                <span>使用量及び使用状況：（</span>
+                <input
+                  type="text"
+                  formControlName="usagePurpose"
+                  class="material-input"
+                />
+                <span>）</span>
+              </div>
+              <div class="material-row">
+                <span>使用量：（</span>
+                <input
+                  type="text"
+                  formControlName="usageAmount"
+                  class="material-input"
+                />
+                <span>）</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">
+            衛生材料等の種類・規格・サイズ・寸法等の変更の有無
+          </th>
+          <td colspan="3">
+            <div class="material-change">
+              <span>衛生材料等(種類・サイズ・必要量等)の変更の必要性：</span>
+              <label class="material-change-radio">
+                <input
+                  type="radio"
+                  [value]="true"
+                  formControlName="materialChange"
+                />
+                <span>有</span>
+              </label>
+              <span>・</span>
+              <label class="material-change-radio">
+                <input
+                  type="radio"
+                  [value]="false"
+                  formControlName="materialChange"
+                />
+                <span>無</span>
+              </label>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">衛生材料等の規格・寸法の変更</th>
+          <td colspan="3" class="multi-line">
+            <textarea formControlName="changeDetails"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <th colspan="4" class="label">特記すべき事項</th>
+        </tr>
+        <tr>
+          <td colspan="4" class="multi-line">
+            <textarea formControlName="otherNotes"></textarea>
+          </td>
+        </tr>
+      </table>
+
+      <div class="report-footer">
+        <p>上記のとおり、指定訪問看護の実施について報告いたします。</p>
+
+        <table class="footer-signature">
+          <tr>
+            <td class="left-cell">
+              <span class="date-field-year">　　</span>年
+              <span class="date-field-month">　</span>月
+              <span class="date-field-day">　</span>日<br /><br />
+              <span class="recipient-field"></span>殿
+            </td>
+            <td class="right-cell">
+              事業所名：<span class="facility-field"></span><br /><br />
+              管理者氏名：<span class="manager-field"></span
+              ><span class="stamp-area">印</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
