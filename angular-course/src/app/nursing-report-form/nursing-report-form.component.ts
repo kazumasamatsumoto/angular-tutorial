@@ -9,7 +9,8 @@ interface NursingReport {
   birthDate: string;
   caregiverFacility: string;
   requireCareLevel: number;
-  visitDates: number[];
+  visitDatesPrevMonth: number[];
+  visitDatesCurrentMonth: number[];
   specialNotes: string;
   nursingContent: string;
   familyCooperation: string;
@@ -34,9 +35,28 @@ export class NursingReportFormComponent implements OnInit {
 
   reportForm!: FormGroup;
   today = new Date();
+  currentMonth = new Date();
+  prevMonth = new Date();
+  currentMonthName: string = '';
+  prevMonthName: string = '';
 
   ngOnInit(): void {
+    // 現在の月を設定
+    this.currentMonth = new Date();
+
+    // 前月を設定
+    this.prevMonth = new Date();
+    this.prevMonth.setMonth(this.prevMonth.getMonth() - 1);
+
+    // 月名を設定
+    this.currentMonthName = this.getMonthName(this.currentMonth);
+    this.prevMonthName = this.getMonthName(this.prevMonth);
+
     this.reportForm = this.createForm();
+  }
+
+  getMonthName(date: Date): string {
+    return date.getFullYear() + '年' + (date.getMonth() + 1) + '月';
   }
 
   createForm(): FormGroup {
@@ -47,7 +67,8 @@ export class NursingReportFormComponent implements OnInit {
       birthDay: ['15', Validators.required],
       caregiverFacility: ['東京訪問看護ステーション'],
       requireCareLevel: [5], // 要介護3
-      visitDates: this.createVisitDatesArray(),
+      visitDatesPrevMonth: this.createVisitDatesArray(),
+      visitDatesCurrentMonth: this.createVisitDatesArray(),
       specialNotes: ['特記事項なし'],
       nursingContent: ['バイタルサイン測定、健康状態確認、服薬指導、運動機能訓練を実施'],
       familyCooperation: ['長男が主に介護を担当しており、毎日の生活支援を行っている'],
@@ -62,23 +83,26 @@ export class NursingReportFormComponent implements OnInit {
   }
 
   createVisitDatesArray(): FormArray {
-    // 1日、5日、10日、15日、20日、25日に訪問（1: ○）
+    // すべての日を非表示（0）に設定
     const defaultVisits = Array(31).fill(0);
-    [1, 5, 10, 15, 20, 25].forEach(day => {
-      defaultVisits[day - 1] = 1;
-    });
 
     return this.fb.array(defaultVisits.map(value => this.fb.control(value)));
   }
 
-  toggleVisitDate(index: number): void {
-    const visitDates = this.reportForm.get('visitDates') as FormArray;
+  toggleVisitDate(index: number, month: string): void {
+    const monthKey = month === 'Current' ? 'visitDatesCurrentMonth' : 'visitDatesPrevMonth';
+    const visitDates = this.reportForm.get(monthKey) as FormArray;
     const currentValue = visitDates.at(index).value;
-    
+
     // 0: 非表示、1: ○、2: ◎、3: △、4: ×、5: 非表示（0に戻る）
     const nextValue = (currentValue + 1) % 5;
-    
+
     visitDates.at(index).setValue(nextValue);
+  }
+
+  // 月の日数を取得
+  getDaysInMonth(date: Date): number {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   }
 
   toggleCareLevel(level: number): void {
@@ -146,15 +170,16 @@ export class NursingReportFormComponent implements OnInit {
     this.reportForm = this.createForm();
   }
 
-  getVisitDatesArray(): number[] {
+  getVisitDatesArray(month: string): number[] {
     if (!this.reportForm) return Array(31).fill(0);
-    const visitDatesFormArray = this.reportForm.get('visitDates') as FormArray;
+    const monthKey = month === 'Current' ? 'visitDatesCurrentMonth' : 'visitDatesPrevMonth';
+    const visitDatesFormArray = this.reportForm.get(monthKey) as FormArray;
     return visitDatesFormArray ? visitDatesFormArray.controls.map(control => control.value as number) : [];
   }
-  
+
   // 訪問マークの種類を取得
   getVisitMark(value: number): string {
-    switch(value) {
+    switch (value) {
       case 1: return '○';
       case 2: return '◎';
       case 3: return '△';

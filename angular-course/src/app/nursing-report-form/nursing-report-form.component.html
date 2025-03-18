@@ -81,17 +81,20 @@
           </td>
           <td colspan="3">
             <div class="calendar-container">
-              <table class="calendar">
+              <table class="calendar calendar-month" style="border: none">
                 <tr>
-                  <td colspan="7" class="center">2025年3月</td>
+                  <td colspan="7" class="center">{{ prevMonthName }}</td>
                 </tr>
                 <tr>
                   @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
-                  <td (click)="toggleVisitDate(day - 1)" class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Prev')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
-                    @if (getVisitDatesArray()[day-1] > 0) {
+                    @if (getVisitDatesArray('Prev')[day-1] > 0) {
                     <span class="day-circle">{{
-                      getVisitMark(getVisitDatesArray()[day - 1])
+                      getVisitMark(getVisitDatesArray("Prev")[day - 1])
                     }}</span>
                     }
                   </td>
@@ -99,11 +102,14 @@
                 </tr>
                 <tr>
                   @for (day of [8, 9, 10, 11, 12, 13, 14]; track day) {
-                  <td (click)="toggleVisitDate(day - 1)" class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Prev')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
-                    @if (getVisitDatesArray()[day-1] > 0) {
+                    @if (getVisitDatesArray('Prev')[day-1] > 0) {
                     <span class="day-circle">{{
-                      getVisitMark(getVisitDatesArray()[day - 1])
+                      getVisitMark(getVisitDatesArray("Prev")[day - 1])
                     }}</span>
                     }
                   </td>
@@ -111,11 +117,14 @@
                 </tr>
                 <tr>
                   @for (day of [15, 16, 17, 18, 19, 20, 21]; track day) {
-                  <td (click)="toggleVisitDate(day - 1)" class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Prev')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
-                    @if (getVisitDatesArray()[day-1] > 0) {
+                    @if (getVisitDatesArray('Prev')[day-1] > 0) {
                     <span class="day-circle">{{
-                      getVisitMark(getVisitDatesArray()[day - 1])
+                      getVisitMark(getVisitDatesArray("Prev")[day - 1])
                     }}</span>
                     }
                   </td>
@@ -123,76 +132,115 @@
                 </tr>
                 <tr>
                   @for (day of [22, 23, 24, 25, 26, 27, 28]; track day) {
-                  <td (click)="toggleVisitDate(day - 1)" class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Prev')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
-                    @if (getVisitDatesArray()[day-1] > 0) {
+                    @if (getVisitDatesArray('Prev')[day-1] > 0) {
                     <span class="day-circle">{{
-                      getVisitMark(getVisitDatesArray()[day - 1])
+                      getVisitMark(getVisitDatesArray("Prev")[day - 1])
                     }}</span>
                     }
                   </td>
                   }
                 </tr>
-                <tr>
+                <tr class="last-row">
                   @for (day of [29, 30, 31]; track day) {
-                  <td (click)="toggleVisitDate(day - 1)" class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Prev')"
+                    class="calendar-day"
+                    [class.hidden-day]="day > getDaysInMonth(prevMonth)"
+                  >
                     <span class="day-number">{{ day }}</span>
-                    @if (getVisitDatesArray()[day-1] > 0) {
+                    @if (getVisitDatesArray('Prev')[day-1] > 0) {
                     <span class="day-circle">{{
-                      getVisitMark(getVisitDatesArray()[day - 1])
+                      getVisitMark(getVisitDatesArray("Prev")[day - 1])
                     }}</span>
                     }
                   </td>
                   }
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
                 </tr>
               </table>
-              <table class="calendar">
+              <table class="calendar calendar-month" style="border: none">
                 <tr>
-                  <td colspan="7" class="center">2025年4月</td>
+                  <td colspan="7" class="center">{{ currentMonthName }}</td>
                 </tr>
                 <tr>
                   @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
-                  <td class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Current')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
+                    @if (getVisitDatesArray('Current')[day-1] > 0) {
+                    <span class="day-circle">{{
+                      getVisitMark(getVisitDatesArray("Current")[day - 1])
+                    }}</span>
+                    }
                   </td>
                   }
                 </tr>
                 <tr>
                   @for (day of [8, 9, 10, 11, 12, 13, 14]; track day) {
-                  <td class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Current')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
+                    @if (getVisitDatesArray('Current')[day-1] > 0) {
+                    <span class="day-circle">{{
+                      getVisitMark(getVisitDatesArray("Current")[day - 1])
+                    }}</span>
+                    }
                   </td>
                   }
                 </tr>
                 <tr>
                   @for (day of [15, 16, 17, 18, 19, 20, 21]; track day) {
-                  <td class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Current')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
+                    @if (getVisitDatesArray('Current')[day-1] > 0) {
+                    <span class="day-circle">{{
+                      getVisitMark(getVisitDatesArray("Current")[day - 1])
+                    }}</span>
+                    }
                   </td>
                   }
                 </tr>
                 <tr>
                   @for (day of [22, 23, 24, 25, 26, 27, 28]; track day) {
-                  <td class="calendar-day">
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Current')"
+                    class="calendar-day"
+                  >
                     <span class="day-number">{{ day }}</span>
+                    @if (getVisitDatesArray('Current')[day-1] > 0) {
+                    <span class="day-circle">{{
+                      getVisitMark(getVisitDatesArray("Current")[day - 1])
+                    }}</span>
+                    }
                   </td>
                   }
                 </tr>
-                <tr>
-                  @for (day of [29, 30]; track day) {
-                  <td class="calendar-day">
+                <tr class="last-row">
+                  @for (day of [29, 30, 31]; track day) {
+                  <td
+                    (click)="toggleVisitDate(day - 1, 'Current')"
+                    class="calendar-day"
+                    [class.hidden-day]="day > getDaysInMonth(currentMonth)"
+                  >
                     <span class="day-number">{{ day }}</span>
+                    @if (getVisitDatesArray('Current')[day-1] > 0) {
+                    <span class="day-circle">{{
+                      getVisitMark(getVisitDatesArray("Current")[day - 1])
+                    }}</span>
+                    }
                   </td>
                   }
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
                 </tr>
               </table>
             </div>

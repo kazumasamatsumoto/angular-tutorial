@@ -68,6 +68,7 @@ td {
   margin: 0;
   padding: 0;
   text-align: center;
+  border: none;
 }
 
 .calendar td {
@@ -90,11 +91,12 @@ td {
   position: relative;
   z-index: 2;
   font-size: 12px;
+  text-align: left;
 }
 
 .day-circle {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 20px;
@@ -106,6 +108,60 @@ td {
 .calendar-container {
   display: flex;
   justify-content: space-around;
+  border: none;
+}
+
+/* カレンダーの最後の行調整（共通） */
+.calendar-month .last-row {
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 78px;
+  margin-top: 2px;
+}
+
+/* 最後の行の各日のセル調整 */
+.calendar-month .last-row td {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+}
+
+/* 最後の行の日付の調整 */
+.calendar-month .last-row .calendar-day {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* 最後の行の日付番号の調整 */
+.calendar-month .last-row .day-number {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 最後の行の○マークの調整 */
+.calendar-month .last-row .day-circle {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  z-index: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* 31日がない月の場合は非表示 */
+.hidden-day {
+  visibility: hidden;
 }
 
 .visit-note {
