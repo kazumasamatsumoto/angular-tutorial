@@ -9,7 +9,7 @@ interface NursingReport {
   birthDate: string;
   caregiverFacility: string;
   requireCareLevel: number;
-  visitDates: boolean[];
+  visitDates: number[];
   specialNotes: string;
   nursingContent: string;
   familyCooperation: string;
@@ -62,10 +62,10 @@ export class NursingReportFormComponent implements OnInit {
   }
 
   createVisitDatesArray(): FormArray {
-    // 1日、5日、10日、15日、20日、25日に訪問
-    const defaultVisits = Array(31).fill(false);
+    // 1日、5日、10日、15日、20日、25日に訪問（1: ○）
+    const defaultVisits = Array(31).fill(0);
     [1, 5, 10, 15, 20, 25].forEach(day => {
-      defaultVisits[day - 1] = true;
+      defaultVisits[day - 1] = 1;
     });
 
     return this.fb.array(defaultVisits.map(value => this.fb.control(value)));
@@ -73,7 +73,16 @@ export class NursingReportFormComponent implements OnInit {
 
   toggleVisitDate(index: number): void {
     const visitDates = this.reportForm.get('visitDates') as FormArray;
-    visitDates.at(index).setValue(!visitDates.at(index).value);
+    const currentValue = visitDates.at(index).value;
+    
+    // 0: 非表示、1: ○、2: ◎、3: △、4: ×、5: 非表示（0に戻る）
+    const nextValue = (currentValue + 1) % 5;
+    
+    visitDates.at(index).setValue(nextValue);
+  }
+
+  toggleCareLevel(level: number): void {
+    this.reportForm.get('requireCareLevel')?.setValue(level);
   }
 
   generatePDF(): void {
@@ -137,9 +146,20 @@ export class NursingReportFormComponent implements OnInit {
     this.reportForm = this.createForm();
   }
 
-  getVisitDatesArray(): boolean[] {
-    if (!this.reportForm) return Array(31).fill(false);
+  getVisitDatesArray(): number[] {
+    if (!this.reportForm) return Array(31).fill(0);
     const visitDatesFormArray = this.reportForm.get('visitDates') as FormArray;
-    return visitDatesFormArray ? visitDatesFormArray.controls.map(control => control.value as boolean) : [];
+    return visitDatesFormArray ? visitDatesFormArray.controls.map(control => control.value as number) : [];
+  }
+  
+  // 訪問マークの種類を取得
+  getVisitMark(value: number): string {
+    switch(value) {
+      case 1: return '○';
+      case 2: return '◎';
+      case 3: return '△';
+      case 4: return '×';
+      default: return '';
+    }
   }
 }

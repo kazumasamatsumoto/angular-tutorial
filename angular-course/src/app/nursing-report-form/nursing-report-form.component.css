@@ -1,13 +1,14 @@
-/* A4サイズに最適化したスタイル */
 @page {
   size: A4;
   margin: 2mm 5mm 5mm 5mm;
 }
 
 body {
-  font-family: "MS Gothic", "MS Mincho", sans-serif;
-  line-height: 1.4;
-  background: white;
+  font-family: "MS Mincho", "MS 明朝", serif;
+  font-size: 12px;
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
 .container {
@@ -17,321 +18,170 @@ body {
   box-sizing: border-box;
 }
 
-.report-header {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.report-header h2 {
-  font-size: 18pt;
-  margin: 2px 0;
-  font-weight: normal;
-}
-
-.report-table {
-  width: 100%;
+table {
   border-collapse: collapse;
-  margin-bottom: 5px;
-  page-break-inside: avoid;
+  width: 100%;
 }
 
-.report-table th,
-.report-table td {
-  border: 1px solid #000;
-  padding: 4px;
+table, th, td {
+  border: 1.5px solid black;
+}
+
+th, td {
+  padding: 5px;
   text-align: left;
-  font-size: 10.5pt;
+  vertical-align: top;
+  position: relative;
 }
 
-.label {
-  width: 20%;
-  background-color: #f5f5f5;
+.title {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 10px;
   font-weight: normal;
+}
+
+.form-number {
+  text-align: right;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.center {
   text-align: center;
 }
 
-.value {
-  width: 30%;
+.verticalCell {
+  vertical-align: middle;
+  text-align: center;
+  width: 30px;
 }
 
-.value input[type="text"] {
-  width: 95%;
-  border: none;
-  background-color: transparent;
-  font-size: 10.5pt;
+.horizontalCell {
+  text-align: center;
+  padding: 2px;
 }
 
-/* 生年月日フィールド */
-.birth-date {
+.spaceBetween {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
 }
 
-.year-input {
-  width: 40px;
-  text-align: right;
+.calendar {
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-.month-input,
-.day-input {
+.calendar td {
+  border: none;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.calendar-day {
+  position: relative;
   width: 25px;
-  text-align: right;
+  height: 25px;
+  display: inline-block;
+}
+
+.day-number {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+}
+
+.day-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  z-index: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.visit-note {
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.signature-line {
+  width: 300px;
+  text-align: center;
+  margin-top: 20px;
+  position: relative;
+}
+
+.stamp-position {
+  position: absolute;
+  right: 100px;
+  bottom: 30px;
+}
+
+.stamp-text {
+  font-size: 12px;
+}
+
+.sign-date {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.text-underline {
+  text-decoration: underline;
 }
 
 /* 要介護認定の区分 */
 .care-level-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: nowrap;
+  padding: 10px 0;
 }
 
-.care-level-label {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 2px;
+.care-level-item {
+  display: inline-block;
+  position: relative;
+  margin: 0 5px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
-.care-level-label input[type="radio"] {
-  opacity: 0;
-  position: absolute;
+.care-level-number {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
 }
 
 .care-level-circle {
-  width: 18px;
-  height: 18px;
-  border: 1px solid #000;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 10pt;
-}
-
-.care-level-label input[type="radio"]:checked + .care-level-circle {
-  background-color: #e0e0e0;
-}
-
-.care-level-separator {
-  margin: 0 10px;
-}
-
-/* カレンダー部分 */
-.calendar-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.calendar {
-  width: 48%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid #000;
-  margin-bottom: 5px;
-}
-
-.calendar-header {
-  text-align: center;
-  border-bottom: 1px solid #000;
-  margin: 0;
-  padding: 2px 0;
-  font-size: 10pt;
-  width: 100%;
-  background-color: #f8f8f8;
-}
-
-.exact-calendar {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.exact-calendar td {
-  text-align: center;
-  padding: 1px 5px;
-  font-size: 10pt;
-  border: 1px solid #ddd;
-  height: 18px;
-  position: relative;
-}
-
-.calendar-note {
-  margin-top: 5px;
-  font-size: 9pt;
-  line-height: 1.3;
-  text-align: justify;
-}
-
-.date-text {
-  position: relative;
-  z-index: 1;
-}
-
-.symbol {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 14pt;
+  font-size: 20px;
+  z-index: 1;
+  opacity: 0.7;
   pointer-events: none;
-}
-
-/* 日付マーカースタイル */
-.circle::before {
-  content: "○";
-}
-
-.triangle::before {
-  content: "△";
-}
-
-.cross::before {
-  content: "×";
-}
-
-.diamond::before {
-  content: "◇";
-}
-
-/* 複数行入力フィールド */
-.multi-line {
-  min-height: 60px;
-}
-
-.multi-line textarea {
-  width: 98%;
-  height: 98%;
-  border: none;
-  resize: none;
-  background-color: transparent;
-  font-size: 10.5pt;
-  min-height: 58px;
-}
-
-/* 衛生材料関連 */
-.material-grid {
-  display: flex;
-  flex-direction: column;
-}
-
-.material-row {
-  display: flex;
-  align-items: center;
-  margin: 3px 0;
-  font-size: 10.5pt;
-}
-
-.material-input {
-  flex: 1;
-  margin: 0 5px;
-  border: none;
-  background-color: transparent;
-  font-size: 10.5pt;
-}
-
-.material-change {
-  display: flex;
-  gap: 20px;
-  font-size: 10.5pt;
-  align-items: center;
-}
-
-.material-change-radio {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* フッター部分 */
-.report-footer {
-  margin-top: 25px;
-  font-size: 10.5pt;
-}
-
-.footer-signature {
-  width: 100%;
-  margin-top: 15px;
-  border-collapse: collapse;
-}
-
-.left-cell {
-  width: 50%;
-  text-align: left;
-  vertical-align: top;
-  padding: 10px;
-}
-
-.right-cell {
-  width: 50%;
-  text-align: left;
-  vertical-align: top;
-  padding: 10px;
-}
-
-.date-field-year {
-  display: inline-block;
-  width: 60px;
-  text-align: center;
-  border-bottom: 1px solid #000;
-}
-
-.date-field-month,
-.date-field-day {
-  display: inline-block;
-  width: 30px;
-  text-align: center;
-  border-bottom: 1px solid #000;
-}
-
-/* 名宛人の空白調整 */
-.recipient-field {
-  display: inline-block;
-  width: 150px;
-  text-align: center;
-  border-bottom: 1px solid #000;
-  margin-right: 5px;
-}
-
-/* 印鑑エリアの調整 */
-.stamp-area {
-  padding-left: 30px;
-}
-
-/* 事業所名の空白調整 */
-.facility-field {
-  display: inline-block;
-  width: 200px;
-  border-bottom: 1px solid #000;
-  margin-left: 10px;
-}
-
-/* 管理者氏名の空白調整 */
-.manager-field {
-  display: inline-block;
-  width: 150px;
-  border-bottom: 1px solid #000;
-  margin-left: 10px;
-}
-
-.date-section {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  margin: 15px 0;
-}
-
-.signature-section {
-  text-align: right;
-  padding-right: 20px;
-}
-
-.signature-section p {
-  margin: 5px 0;
-}
-
-.stamp-area {
-  display: inline-block;
-  margin-left: 20px;
 }
 
 /* ボタン類 */
