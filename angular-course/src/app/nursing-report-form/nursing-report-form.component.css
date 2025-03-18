@@ -37,6 +37,19 @@ td {
   position: relative;
 }
 
+/* 訪問日の説明文のボーダーを消す */
+td.visit-note {
+  border-top-width: 0 !important;
+  border-top-style: none !important;
+  border-top-color: transparent !important;
+}
+
+tr:has(td.visit-note) {
+  border-top-width: 0 !important;
+  border-top-style: none !important;
+  border-top-color: transparent !important;
+}
+
 .title {
   text-align: center;
   font-size: 16px;
@@ -167,6 +180,40 @@ td {
 .visit-note {
   font-size: 10px;
   line-height: 1.5;
+  border-top: none;
+}
+
+.no-border-top {
+  border-top: none !important;
+}
+
+.no-border-top td {
+  border-top: none !important;
+}
+
+tr.no-border-top {
+  border-top: none !important;
+}
+
+/* カレンダーと説明文の間の境界線を消す */
+tr.no-border-top,
+tr.no-border-top td {
+  border-top-color: transparent !important;
+  border-top-style: none !important;
+  border-top-width: 0 !important;
+}
+
+.calendar-container + tr td,
+.calendar-container + tr {
+  border-top: none !important;
+}
+
+.visit-note-container {
+  font-size: 10px;
+  line-height: 1.5;
+  padding: 5px 0;
+  border: none;
+  background: none;
 }
 
 .flex-container {
