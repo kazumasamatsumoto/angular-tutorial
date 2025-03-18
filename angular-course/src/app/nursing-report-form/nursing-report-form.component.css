@@ -23,11 +23,14 @@ table {
   width: 100%;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1.5px solid black;
 }
 
-th, td {
+th,
+td {
   padding: 5px;
   text-align: left;
   vertical-align: top;
@@ -39,12 +42,6 @@ th, td {
   font-size: 16px;
   margin-bottom: 10px;
   font-weight: normal;
-}
-
-.form-number {
-  text-align: right;
-  font-size: 12px;
-  margin-bottom: 5px;
 }
 
 .center {
