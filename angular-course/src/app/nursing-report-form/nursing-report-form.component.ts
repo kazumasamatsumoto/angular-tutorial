@@ -125,40 +125,87 @@ export class NursingReportFormComponent implements OnInit {
       return;
     }
 
-    console.log('Starting PDF generation');
+    // 画面サイズを確認
+    console.log(`Element size: ${reportElement.offsetWidth} x ${reportElement.offsetHeight}`);
 
-    // HTML2Canvasオプション
+    // HTML2Canvasのオプション - 重要な設定を調整
     const options = {
-      scale: 2, // 高解像度
+      // 高解像度で全体を捉える
+      scale: 2,
+      // 背景色
+      backgroundColor: '#ffffff',
+      // 要素の全体を確実に捉えるための設定
+      width: reportElement.scrollWidth + 10, // 横幅にも余裕を持たせる
+      height: reportElement.scrollHeight + 100, // 余裕を持たせる
+      windowWidth: reportElement.scrollWidth + 10, // 横幅のウィンドウサイズも調整
+      windowHeight: reportElement.scrollHeight + 100,
+      // セキュリティ関連設定
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff',
-      // サイズ指定を明示的に行う
-      width: reportElement.offsetWidth,
-      height: reportElement.offsetHeight
+      // レンダリング改善
+      letterRendering: true,
+      // ログを詳細に
+      logging: true,
+      // スクロール対策
+      scrollY: -window.scrollY,
+      scrollX: -window.scrollX
     };
 
+    // 処理中メッセージ
+    console.log('PDFを生成しています...');
+
+    // HTML要素をキャンバスに変換 - 全体を一度に捉える
     html2canvas(reportElement, options).then(canvas => {
-      console.log('Canvas generated successfully');
-      const imgData = canvas.toDataURL('image/png');
+      console.log(`Canvas生成成功: ${canvas.width} x ${canvas.height}`);
 
       try {
-        // A4サイズのPDF作成
-        const pdf = new jspdf({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4'
-        });
+        // A4サイズのPDFドキュメントを作成（単一ページ）
+        const pdf = new jspdf('p', 'mm', 'a4');
 
-        // 画像をPDFに追加（A4サイズに合わせて配置）
-        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+        // A4サイズのピクセル比を計算
+        const pageWidth = 210;  // A4幅（mm）
+        const pageHeight = 297; // A4高さ（mm）
+
+        // 余白の設定
+        const margin = 5; // mmを増やす
+        const contentWidth = pageWidth - (margin * 2);
+        const contentHeight = pageHeight - (margin * 2);
+
+        // キャンバスをPDFに収めるための縮小率計算
+        const scale = Math.min(
+          contentWidth / canvas.width,
+          contentHeight / canvas.height
+        ) * 1; // 85%に縮小してさらに余裕を持たせる
+
+        // 縮小後のサイズ
+        const scaledWidth = canvas.width * scale;
+        const scaledHeight = canvas.height * scale;
+
+        // 画像を中央に配置するための座標計算
+        const x = (pageWidth - scaledWidth) / 2;
+        const y = (pageHeight - scaledHeight) / 2;
+
+        // PNG形式で画像を取得
+        const imgData = canvas.toDataURL('image/png', 1.0);
+
+        // PDFに画像を追加（縮小・中央配置）
+        pdf.addImage(
+          imgData,
+          'PNG',
+          x,
+          y,
+          scaledWidth,
+          scaledHeight
+        );
+
+        // PDFを保存
         pdf.save('訪問看護報告書.pdf');
-        console.log('PDF generated and saved successfully');
+        console.log('PDF生成完了');
       } catch (error) {
-        console.error('Error generating PDF:', error);
+        console.error('PDF生成エラー:', error);
       }
     }).catch(error => {
-      console.error('Error generating canvas:', error);
+      console.error('キャンバス生成エラー:', error);
     });
   }
 
