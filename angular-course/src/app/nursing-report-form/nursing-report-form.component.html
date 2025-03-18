@@ -14,45 +14,41 @@
 
       <table>
         <tr>
-          <td style="width: 15%">利用者氏名</td>
-          <td style="width: 35%">
+          <td class="cell-width-15">利用者氏名</td>
+          <td class="cell-width-35">
             <input
               type="text"
               formControlName="patientName"
-              style="width: 95%; border: none"
+              class="input-95-width input-no-border"
             />
           </td>
-          <td style="width: 15%">生年月日</td>
+          <td class="cell-width-15">生年月日</td>
           <td>
             <input
               type="text"
               formControlName="birthYear"
-              style="width: 40px; text-align: right; border: none"
+              class="input-40px input-no-border"
             />年
             <input
               type="text"
               formControlName="birthMonth"
-              style="width: 30px; text-align: right; border: none"
+              class="input-30px input-no-border"
             />月
             <input
               type="text"
               formControlName="birthDay"
-              style="width: 30px; text-align: right; border: none"
+              class="input-30px input-no-border"
             />日（ <span>　　</span>）歳
           </td>
         </tr>
         <tr>
-          <td style="vertical-align: middle">要介護認定の<br />状況</td>
-          <td colspan="3" style="text-align: center; vertical-align: middle">
+          <td class="vertical-middle">要介護認定の<br />状況</td>
+          <td colspan="3" class="text-center vertical-middle">
             <div class="care-level-container">
               <span>要支援（</span>
               @for (level of [1, 2]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level)">
-                <span
-                  class="care-level-number"
-                  style="vertical-align: middle; position: relative; top: -5px"
-                  >{{ level }}</span
-                >
+                <span class="care-level-number care-level-number-style">{{ level }}</span>
                 @if (reportForm.get('requireCareLevel')?.value === level) {
                 <span class="care-level-circle">○</span>
                 }
@@ -60,14 +56,10 @@
               }
               <span>）</span>
 
-              <span style="margin: 0 10px">要介護（</span>
+              <span class="margin-0-10px">要介護（</span>
               @for (level of [1, 2, 3, 4, 5]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level + 2)">
-                <span
-                  class="care-level-number"
-                  style="vertical-align: middle; position: relative; top: -5px"
-                  >{{ level }}</span
-                >
+                <span class="care-level-number care-level-number-style">{{ level }}</span>
                 @if (reportForm.get('requireCareLevel')?.value === level + 2) {
                 <span class="care-level-circle">○</span>
                 }
@@ -78,18 +70,18 @@
           </td>
         </tr>
         <tr>
-          <td style="text-align: center; vertical-align: middle">住　　所</td>
+          <td class="text-center vertical-middle">住　　所</td>
           <td colspan="3">
-            <input type="text" style="width: 100%; border: none" />
+            <input type="text" class="input-full-width input-no-border" />
           </td>
         </tr>
         <tr>
-          <td rowspan="1" style="text-align: center; vertical-align: middle">
+          <td rowspan="1" class="text-center vertical-middle">
             訪問日
           </td>
           <td colspan="3">
             <div class="calendar-container">
-              <table class="calendar calendar-month" style="border: none">
+              <table class="calendar calendar-month calendar-border-none">
                 <tr>
                   <td colspan="7" class="center calendar-month-title">
                     {{ prevMonthName }}
@@ -172,7 +164,7 @@
                   }
                 </tr>
               </table>
-              <table class="calendar calendar-month" style="border: none">
+              <table class="calendar calendar-month calendar-border-none">
                 <tr>
                   <td colspan="7" class="center calendar-month-title">
                     {{ currentMonthName }}
@@ -256,16 +248,7 @@
                 </tr>
               </table>
             </div>
-            <div
-              class="visit-note"
-              style="
-                margin: 5px auto 0;
-                font-size: 10px;
-                line-height: 1.5;
-                text-align: left;
-                width: 80%;
-              "
-            >
+            <div class="visit-note visit-note-style">
               訪問日を○で囲むこと。理学療法士、作業療法士又は言語聴覚士による<br />
               訪問看護を実施した場合は◎、特別訪問看護指示書に基づく訪問看護を<br />
               実施した日は△で囲むこと。緊急時訪問を行った場合は×印とすること。<br />
@@ -274,60 +257,60 @@
           </td>
         </tr>
         <tr>
-          <td style="vertical-align: middle; height: 100px">病状の経過</td>
-          <td colspan="3" style="height: 100px">
+          <td class="vertical-middle cell-height-100">病状の経過</td>
+          <td colspan="3" class="cell-height-100">
             <textarea
               formControlName="specialNotes"
-              style="width: 100%; height: 100%; border: none; resize: none"
+              class="textarea-full"
             ></textarea>
           </td>
         </tr>
         <tr>
-          <td style="vertical-align: middle; height: 100px">看護の内容</td>
-          <td colspan="3" style="height: 100px">
+          <td class="vertical-middle cell-height-100">看護の内容</td>
+          <td colspan="3" class="cell-height-100">
             <textarea
               formControlName="nursingContent"
-              style="width: 100%; height: 100%; border: none; resize: none"
+              class="textarea-full"
             ></textarea>
           </td>
         </tr>
         <tr>
-          <td style="vertical-align: middle; height: 80px">
+          <td class="vertical-middle cell-height-80">
             家庭での介護<br />の状況
           </td>
-          <td colspan="3" style="height: 80px">
+          <td colspan="3" class="cell-height-80">
             <textarea
               formControlName="familyCooperation"
-              style="width: 100%; height: 100%; border: none; resize: none"
+              class="textarea-full"
             ></textarea>
           </td>
         </tr>
         <tr>
-          <td rowspan="3" style="vertical-align: middle">
+          <td rowspan="3" class="vertical-middle">
             衛生材料等の<br />使用量および<br />使用状況
           </td>
           <td colspan="3">
             衛生材料等の名称：（<input
               type="text"
               formControlName="materialName"
-              style="border: none; width: 70%"
+              class="input-no-border input-70-width"
             />）<br />
             使用及び交換頻度：（<input
               type="text"
               formControlName="usagePurpose"
-              style="border: none; width: 70%"
+              class="input-no-border input-70-width"
             />）<br />
             使用量：（<input
               type="text"
               formControlName="usageAmount"
-              style="border: none; width: 70%"
+              class="input-no-border input-70-width"
             />）
           </td>
         </tr>
         <tr>
           <td colspan="3">
             衛生材料等（種類・サイズ・必要量等）の変更の必要性：　
-            <label style="margin-right: 10px">
+            <label class="margin-right-10">
               <input
                 type="radio"
                 [value]="true"
@@ -336,7 +319,7 @@
               有
             </label>
             ・
-            <label style="margin-left: 10px">
+            <label class="margin-left-10">
               <input
                 type="radio"
                 [value]="false"
@@ -347,19 +330,19 @@
           </td>
         </tr>
         <tr>
-          <td colspan="3" style="height: 60px">
+          <td colspan="3" class="cell-height-60">
             <textarea
               formControlName="changeDetails"
-              style="width: 100%; height: 100%; border: none; resize: none"
+              class="textarea-full"
             ></textarea>
           </td>
         </tr>
         <tr>
-          <td style="height: 30px">特記すべき事項</td>
-          <td colspan="3" style="height: 100px">
+          <td class="cell-height-30">特記すべき事項</td>
+          <td colspan="3" class="cell-height-100">
             <textarea
               formControlName="otherNotes"
-              style="width: 100%; height: 100%; border: none; resize: none"
+              class="textarea-full"
             ></textarea>
           </td>
         </tr>
@@ -369,14 +352,14 @@
             氏 名：<input
               type="text"
               formControlName="creatorName"
-              style="border: none; width: 70%"
+              class="input-no-border input-70-width"
             />
           </td>
           <td colspan="2">職 種： 看護師・保健師</td>
         </tr>
       </table>
 
-      <div style="text-align: center; margin-top: 20px">
+      <div class="text-center margin-top-20">
         上記のとおり、指定訪問看護又は看護サービスの提供の実施について報告いたします。
       </div>
 
@@ -384,16 +367,16 @@
         <div>2025年3月17日</div>
       </div>
 
-      <div style="display: flex; justify-content: center">
-        <div style="width: 350px; text-align: right">
+      <div class="flex-display justify-center">
+        <div class="width-350 text-right">
           <div>
             事業所名：<input
               type="text"
               formControlName="caregiverFacility"
-              style="border: none; width: 70%"
+              class="input-no-border input-70-width"
             />
           </div>
-          <div>管理者氏名：<span style="margin-left: 10px"></span></div>
+          <div>管理者氏名：<span class="margin-left-10"></span></div>
         </div>
       </div>
 
