@@ -48,7 +48,9 @@
               <span>要支援（</span>
               @for (level of [1, 2]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level)">
-                <span class="care-level-number care-level-number-style">{{ level }}</span>
+                <span class="care-level-number care-level-number-style">{{
+                  level
+                }}</span>
                 @if (reportForm.get('requireCareLevel')?.value === level) {
                 <span class="care-level-circle">○</span>
                 }
@@ -59,7 +61,9 @@
               <span class="margin-0-10px">要介護（</span>
               @for (level of [1, 2, 3, 4, 5]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level + 2)">
-                <span class="care-level-number care-level-number-style">{{ level }}</span>
+                <span class="care-level-number care-level-number-style">{{
+                  level
+                }}</span>
                 @if (reportForm.get('requireCareLevel')?.value === level + 2) {
                 <span class="care-level-circle">○</span>
                 }
@@ -76,9 +80,7 @@
           </td>
         </tr>
         <tr>
-          <td rowspan="1" class="text-center vertical-middle">
-            訪問日
-          </td>
+          <td rowspan="1" class="text-center vertical-middle">訪問日</td>
           <td colspan="3">
             <div class="calendar-container">
               <table class="calendar calendar-month calendar-border-none">
@@ -363,25 +365,54 @@
         上記のとおり、指定訪問看護又は看護サービスの提供の実施について報告いたします。
       </div>
 
-      <div class="sign-date">
-        <div>2025年3月17日</div>
-      </div>
-
-      <div class="flex-display justify-center">
-        <div class="width-350 text-right">
-          <div>
-            事業所名：<input
-              type="text"
-              formControlName="caregiverFacility"
-              class="input-no-border input-70-width"
-            />
+      <div class="report-footer">
+        <div class="footer-row">
+          <div class="left-block">
+            <div class="date-inputs">
+              <input
+                type="text"
+                formControlName="reportYear"
+                class="input-year input-no-border text-center"
+              />年
+              <input
+                type="text"
+                formControlName="reportMonth"
+                class="input-month input-no-border text-center"
+              />月
+              <input
+                type="text"
+                formControlName="reportDay"
+                class="input-day input-no-border text-center"
+              />日
+            </div>
           </div>
-          <div>管理者氏名：<span class="margin-left-10"></span></div>
-        </div>
-      </div>
 
-      <div class="stamp-position">
-        <div class="stamp-text">㊞</div>
+          <div class="right-block">
+            <div class="info-row">
+              <div class="info-label">事業所名</div>
+              <div class="info-input">
+                <input
+                  type="text"
+                  formControlName="caregiverFacility"
+                  class="input-no-border input-100-width"
+                />
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-label">管理者氏名</div>
+              <div class="info-input">
+                <input
+                  type="text"
+                  formControlName="managerName"
+                  class="input-no-border input-100-width"
+                />
+              </div>
+              <div class="stamp-circle">
+                <div class="stamp-text">㊞</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </form>

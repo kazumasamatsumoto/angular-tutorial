@@ -21,6 +21,10 @@ interface NursingReport {
   changeDetails: string;
   otherNotes: string;
   creatorName: string;
+  reportYear: string;
+  reportMonth: string;
+  reportDay: string;
+  managerName: string;
 }
 
 @Component({
@@ -79,7 +83,11 @@ export class NursingReportFormComponent implements OnInit {
       materialChange: [false],
       changeDetails: [''],
       otherNotes: [''],
-      creatorName: ['看護 花子']
+      creatorName: ['看護 花子'],
+      reportYear: ['2025'],
+      reportMonth: ['3'],
+      reportDay: ['17'],
+      managerName: ['']
     });
   }
 
