@@ -56,6 +56,7 @@ export class NursingReportFormComponent implements OnInit {
   }
 
   getMonthName(date: Date): string {
+    // 年月の表示形式はそのまま保持
     return date.getFullYear() + '年' + (date.getMonth() + 1) + '月';
   }
 

@@ -4,11 +4,12 @@
 }
 
 body {
-  font-family: "MS Mincho", "MS 明朝", serif;
+  font-family: serif;
   font-size: 12px;
   width: 800px;
   margin: 0 auto;
   padding: 20px 0;
+  font-weight: normal;
 }
 
 .container {
@@ -16,6 +17,8 @@ body {
   margin: 0 auto;
   padding: 2mm;
   box-sizing: border-box;
+  font-family: serif;
+  font-weight: normal;
 }
 
 table {
@@ -27,6 +30,8 @@ table,
 th,
 td {
   border: 1.5px solid black;
+  font-family: serif;
+  font-weight: normal;
 }
 
 th,
@@ -55,6 +60,7 @@ tr:has(td.visit-note) {
   font-size: 16px;
   margin-bottom: 10px;
   font-weight: normal;
+  font-family: serif;
 }
 
 .center {
@@ -105,6 +111,9 @@ tr:has(td.visit-note) {
   z-index: 2;
   font-size: 12px;
   text-align: left;
+  /* 年月表示と同じフォントに */
+  font-family: serif;
+  font-weight: normal;
 }
 
 .day-circle {
@@ -158,6 +167,8 @@ tr:has(td.visit-note) {
   text-align: center;
   display: block;
   margin: 0 auto;
+  font-family: serif;
+  font-weight: normal;
 }
 
 /* 最後の行の○マークの調整 */
@@ -320,14 +331,37 @@ tr.no-border-top td {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: serif;
+    font-weight: normal;
   }
 
   .container {
     border: none;
     padding: 2mm 5mm 5mm 5mm;
+    font-family: serif;
+    font-weight: normal;
   }
 
   .action-buttons {
     display: none;
   }
+}
+
+/* フォーム要素のスタイル */
+input,
+textarea,
+button,
+select {
+  font-family: serif;
+  font-weight: normal;
+}
+
+.calendar-month tr:first-child td {
+  /* 元の年月表示スタイルに合わせる */
+}
+
+.calendar-month-title {
+  /* 年月表示のみに特別なフォントを適用 */
+  font-family: serif;
+  font-weight: normal;
 }

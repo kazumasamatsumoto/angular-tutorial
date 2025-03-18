@@ -48,7 +48,11 @@
               <span>要支援（</span>
               @for (level of [1, 2]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level)">
-                <span class="care-level-number">{{ level }}</span>
+                <span
+                  class="care-level-number"
+                  style="vertical-align: middle; position: relative; top: -5px"
+                  >{{ level }}</span
+                >
                 @if (reportForm.get('requireCareLevel')?.value === level) {
                 <span class="care-level-circle">○</span>
                 }
@@ -59,7 +63,11 @@
               <span style="margin: 0 10px">要介護（</span>
               @for (level of [1, 2, 3, 4, 5]; track level) {
               <div class="care-level-item" (click)="toggleCareLevel(level + 2)">
-                <span class="care-level-number">{{ level }}</span>
+                <span
+                  class="care-level-number"
+                  style="vertical-align: middle; position: relative; top: -5px"
+                  >{{ level }}</span
+                >
                 @if (reportForm.get('requireCareLevel')?.value === level + 2) {
                 <span class="care-level-circle">○</span>
                 }
@@ -83,7 +91,9 @@
             <div class="calendar-container">
               <table class="calendar calendar-month" style="border: none">
                 <tr>
-                  <td colspan="7" class="center">{{ prevMonthName }}</td>
+                  <td colspan="7" class="center calendar-month-title">
+                    {{ prevMonthName }}
+                  </td>
                 </tr>
                 <tr>
                   @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
@@ -164,7 +174,9 @@
               </table>
               <table class="calendar calendar-month" style="border: none">
                 <tr>
-                  <td colspan="7" class="center">{{ currentMonthName }}</td>
+                  <td colspan="7" class="center calendar-month-title">
+                    {{ currentMonthName }}
+                  </td>
                 </tr>
                 <tr>
                   @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
